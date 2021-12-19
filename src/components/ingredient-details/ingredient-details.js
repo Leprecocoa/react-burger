@@ -1,7 +1,13 @@
 import { ModalCloseButton } from "../modal-close-button/modal-close-button";
 import ingredientDetailsStyles from "./ingredient-details.module.css";
-export function IngredientDetails(props) {
-  console.log("pi", props.ingredient);
+import PropTypes from "prop-types";
+
+IngredientDetails.propTypes = {
+  ingredient: PropTypes.object.isRequired,
+  onCloseClick: PropTypes.func.isRequired,
+};
+
+export function IngredientDetails({ ingredient, onCloseClick }) {
   const {
     image_large: image,
     name,
@@ -9,12 +15,12 @@ export function IngredientDetails(props) {
     proteins,
     fat,
     carbohydrates,
-  } = props.ingredient;
+  } = ingredient;
   return (
     <div className={`${ingredientDetailsStyles.details} pt-10 pb-15`}>
       <div className={ingredientDetailsStyles.header}>
         <h2 className="text text_type_main-large">Детали ингредиента</h2>
-        <ModalCloseButton onClick={props.onCloseClick} />
+        <ModalCloseButton onClick={onCloseClick} />
       </div>
       <div className={ingredientDetailsStyles.content}>
         <img className={ingredientDetailsStyles.image} src={image} alt={name} />

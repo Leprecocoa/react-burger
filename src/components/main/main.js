@@ -10,6 +10,11 @@ import { IngredientDetailsModal } from "../ingredient-details-modal/ingredient-d
 import IngredientsSection from "../ingredients-section/ingredients-section";
 import { OrderDetailsModal } from "../order-details-modal/order-details-modal";
 import mainSectionStyles from "./main.module.css";
+import PropTypes from "prop-types";
+
+Main.propTypes = {
+  ingredients: PropTypes.array.isRequired,
+};
 
 const ingredientCategories = [
   { type: "bun", title: "Булки" },

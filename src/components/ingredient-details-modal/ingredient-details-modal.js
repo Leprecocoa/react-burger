@@ -1,18 +1,21 @@
 import { IngredientDetails } from "../ingredient-details/ingredient-details";
 import { ModalOverlay } from "../modal-overlay/modal-overlay";
 import { Modal } from "../modal/modal";
+import PropTypes from "prop-types";
 
-export function IngredientDetailsModal(props) {
-  if (!props.ingredient) {
+IngredientDetailsModal.propTypes = {
+  ingredient: PropTypes.object,
+  onClose: PropTypes.func.isRequired,
+};
+
+export function IngredientDetailsModal({ ingredient, onClose }) {
+  if (!ingredient) {
     return null;
   }
   return (
-    <ModalOverlay onClick={props.onClose} onEscPress={props.onClose}>
+    <ModalOverlay onClick={onClose} onEscPress={onClose}>
       <Modal>
-        <IngredientDetails
-          ingredient={props.ingredient}
-          onCloseClick={props.onClose}
-        />
+        <IngredientDetails ingredient={ingredient} onCloseClick={onClose} />
       </Modal>
     </ModalOverlay>
   );

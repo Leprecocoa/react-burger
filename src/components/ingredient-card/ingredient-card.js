@@ -3,7 +3,13 @@ import {
   CurrencyIcon,
 } from "@ya.praktikum/react-developer-burger-ui-components";
 import { useCallback } from "react";
+import PropTypes from "prop-types";
 import ingredientCard from "./ingredient-card.module.css";
+
+IngredientCard.propTypes = {
+  ingredient: PropTypes.object.isRequired,
+  onIngredientClick: PropTypes.func.isRequired
+};
 
 function IngredientCard({ ingredient, onIngredientClick }) {
   const handleSectionClick = useCallback(() => {
