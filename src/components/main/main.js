@@ -5,8 +5,10 @@ import {
   DragIcon,
   Tab,
 } from "@ya.praktikum/react-developer-burger-ui-components";
+import { useCallback, useState } from "react";
+import { IngredientDetailsModal } from "../ingredient-details-modal/ingredient-details-modal";
 import IngredientsSection from "../ingredients-section/ingredients-section";
-import { TestModal } from "../modal/test";
+import { OrderDetailsModal } from "../order-details-modal/order-details-modal";
 import mainSectionStyles from "./main.module.css";
 
 const ingredientCategories = [
@@ -16,9 +18,22 @@ const ingredientCategories = [
 ];
 
 function Main({ ingredients }) {
+  const [selectedIngredient, setSelectedIngredient] = useState(null);
+  const handleIngredientDetailsOpen = useCallback((ingredient) => {
+    setSelectedIngredient(ingredient);
+  }, []);
+  const handleIngredientDetailsClose = useCallback(() => {
+    setSelectedIngredient(null);
+  }, []);
+  const [order, setOrder] = useState(null);
+  const handleOrderDetailsOpen = useCallback(() => {
+    setOrder({});
+  }, []);
+  const handleOrderDetailsClose = useCallback(() => {
+    setOrder(null);
+  }, []);
   return (
     <main className={`${mainSectionStyles.main} pb-10`}>
-      <TestModal />
       <section
         className={`${mainSectionStyles.ingredients_section} pt-10 mr-10`}
       >
@@ -36,6 +51,7 @@ function Main({ ingredients }) {
               key={category.type}
               ingredients={ingredients}
               {...category}
+              onIngredientClick={handleIngredientDetailsOpen}
             />
           ))}
         </div>
@@ -93,11 +109,16 @@ function Main({ ingredients }) {
             <span className="text text_type_digits-medium mr-2">610</span>
             <CurrencyIcon type="primary" />
           </div>
-          <Button type="primary" size="large">
+          <Button type="primary" size="large" onClick={handleOrderDetailsOpen}>
             Оформить заказ
           </Button>
         </div>
       </section>
+      <IngredientDetailsModal
+        ingredient={selectedIngredient}
+        onClose={handleIngredientDetailsClose}
+      />
+      <OrderDetailsModal order={order} onClose={handleOrderDetailsClose} />
     </main>
   );
 }

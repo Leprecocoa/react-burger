@@ -16,7 +16,11 @@ function IngredientsSection(props) {
           })
           .map((ingredient) => {
             return (
-              <IngredientCard key={ingredient._id} ingredient={ingredient} />
+              <IngredientCard
+                key={ingredient._id}
+                ingredient={ingredient}
+                onIngredientClick={props.onIngredientClick}
+              />
             );
           })}
       </div>

@@ -2,11 +2,18 @@ import {
   Counter,
   CurrencyIcon,
 } from "@ya.praktikum/react-developer-burger-ui-components";
+import { useCallback } from "react";
 import ingredientCard from "./ingredient-card.module.css";
 
-function IngredientCard({ ingredient }) {
+function IngredientCard({ ingredient, onIngredientClick }) {
+  const handleSectionClick = useCallback(() => {
+    onIngredientClick(ingredient);
+  }, [onIngredientClick, ingredient]);
   return (
-    <section className={ingredientCard.ingredient_card}>
+    <section
+      className={ingredientCard.ingredient_card}
+      onClick={handleSectionClick}
+    >
       <Counter count={233} size="small" />
       <img src={ingredient.image} alt={ingredient.name} />
       <div className={`${ingredientCard.price} mt-1 mb-1`}>

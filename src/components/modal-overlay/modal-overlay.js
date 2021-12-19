@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { createPortal } from "react-dom";
 import modalOverlayStyles from "./modal-overlay.module.css";
 
-export function ModalOverlay({ onEscPress, onClick }) {
+export function ModalOverlay({ onEscPress, onClick, children }) {
   useEffect(() => {
     const listener = (event) => {
       if (event.key === "Escape") {
@@ -15,7 +15,7 @@ export function ModalOverlay({ onEscPress, onClick }) {
     };
   }, [onEscPress]);
   return createPortal(
-    <div className={modalOverlayStyles.modal_overlay} onClick={onClick} />,
+    <div className={modalOverlayStyles.modal_overlay} onClick={onClick}>{children}</div>,
     document.querySelector("body")
   );
 }
