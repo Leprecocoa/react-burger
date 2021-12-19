@@ -6,6 +6,7 @@ import {
   Tab,
 } from "@ya.praktikum/react-developer-burger-ui-components";
 import IngredientsSection from "../ingredients-section/ingredients-section";
+import { TestModal } from "../modal/test";
 import mainSectionStyles from "./main.module.css";
 
 const ingredientCategories = [
@@ -17,6 +18,7 @@ const ingredientCategories = [
 function Main({ ingredients }) {
   return (
     <main className={`${mainSectionStyles.main} pb-10`}>
+      <TestModal />
       <section
         className={`${mainSectionStyles.ingredients_section} pt-10 mr-10`}
       >
