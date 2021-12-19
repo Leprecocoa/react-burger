@@ -4,7 +4,7 @@ import { OrderDetails } from "../order-details/order-details";
 import PropTypes from "prop-types";
 
 OrderDetailsModal.propTypes = {
-  order: PropTypes.object,
+  order: PropTypes.any,
   onClose: PropTypes.func.isRequired,
 };
 

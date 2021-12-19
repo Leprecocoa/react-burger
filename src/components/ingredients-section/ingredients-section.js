@@ -1,10 +1,11 @@
 import IngredientCard from "../ingredient-card/ingredient-card";
 import ingredientsSectionStyles from "./ingredients-section.module.css";
 import PropTypes from "prop-types";
+import { ingredientType } from "../../utils/types";
 
 IngredientsSection.propTypes = {
   title: PropTypes.string.isRequired,
-  ingredients: PropTypes.array.isRequired,
+  ingredients: PropTypes.arrayOf(ingredientType).isRequired,
   type: PropTypes.string.isRequired,
   onIngredientClick: PropTypes.func.isRequired,
 };

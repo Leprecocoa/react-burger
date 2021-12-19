@@ -2,9 +2,10 @@ import { IngredientDetails } from "../ingredient-details/ingredient-details";
 import { ModalOverlay } from "../modal-overlay/modal-overlay";
 import { Modal } from "../modal/modal";
 import PropTypes from "prop-types";
+import { ingredientType } from "../../utils/types";
 
 IngredientDetailsModal.propTypes = {
-  ingredient: PropTypes.object,
+  ingredient: ingredientType,
   onClose: PropTypes.func.isRequired,
 };
 

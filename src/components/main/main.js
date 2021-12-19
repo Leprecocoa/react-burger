@@ -11,9 +11,10 @@ import IngredientsSection from "../ingredients-section/ingredients-section";
 import { OrderDetailsModal } from "../order-details-modal/order-details-modal";
 import mainSectionStyles from "./main.module.css";
 import PropTypes from "prop-types";
+import { ingredientType } from "../../utils/types";
 
 Main.propTypes = {
-  ingredients: PropTypes.array.isRequired,
+  ingredients: PropTypes.arrayOf(ingredientType).isRequired,
 };
 
 const ingredientCategories = [
@@ -37,6 +38,7 @@ function Main({ ingredients }) {
   const handleOrderDetailsClose = useCallback(() => {
     setOrder(null);
   }, []);
+  console.log('in', ingredients)
   return (
     <main className={`${mainSectionStyles.main} pb-10`}>
       <section

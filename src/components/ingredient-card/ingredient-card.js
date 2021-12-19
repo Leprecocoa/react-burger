@@ -5,9 +5,10 @@ import {
 import { useCallback } from "react";
 import PropTypes from "prop-types";
 import ingredientCard from "./ingredient-card.module.css";
+import { ingredientType } from "../../utils/types";
 
 IngredientCard.propTypes = {
-  ingredient: PropTypes.object.isRequired,
+  ingredient: ingredientType.isRequired,
   onIngredientClick: PropTypes.func.isRequired
 };
 

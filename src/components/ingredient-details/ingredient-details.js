@@ -1,9 +1,10 @@
 import { ModalCloseButton } from "../modal-close-button/modal-close-button";
 import ingredientDetailsStyles from "./ingredient-details.module.css";
 import PropTypes from "prop-types";
+import { ingredientType } from "../../utils/types";
 
 IngredientDetails.propTypes = {
-  ingredient: PropTypes.object.isRequired,
+  ingredient: ingredientType.isRequired,
   onCloseClick: PropTypes.func.isRequired,
 };
 
