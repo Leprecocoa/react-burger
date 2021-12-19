@@ -6,11 +6,9 @@ import { useIngredients } from "../../utils/use-ingredients.js";
 function App() {
   const { ingredients } = useIngredients();
   return (
-    <div className="App">
-      <div className={appstyles.page}>
-        <Header />
-        <Main ingredients={ingredients} />
-      </div>
+    <div className={appstyles.page}>
+      <Header />
+      <Main ingredients={ingredients} />
     </div>
   );
 }

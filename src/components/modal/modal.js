@@ -1,11 +1,14 @@
 import { useEffect } from "react";
-import closeIcon from "../../images/close.svg";
 import modalStyles from "./modal.module.css";
 import { createPortal } from "react-dom";
 import { ModalOverlay } from "../modal-overlay/modal-overlay";
+import { CloseIcon } from "@ya.praktikum/react-developer-burger-ui-components";
 
 export function Modal({ children, title, onClose, isVisible }) {
   useEffect(() => {
+    if (!isVisible) {
+      return;
+    }
     const listener = (event) => {
       if (event.key === "Escape") {
         onClose();
@@ -15,7 +18,7 @@ export function Modal({ children, title, onClose, isVisible }) {
     return () => {
       document.removeEventListener("keydown", listener);
     };
-  }, [onClose]);
+  }, [onClose, isVisible]);
 
   if (!isVisible) {
     return null;
@@ -28,12 +31,12 @@ export function Modal({ children, title, onClose, isVisible }) {
         <div className={modalStyles.header}>
           <h2 className="text text_type_main-large">{title}</h2>
           <button className={modalStyles.close} onClick={onClose}>
-            <img src={closeIcon} alt="close" />
+            <CloseIcon type="primary" />
           </button>
         </div>
         {children}
       </div>
     </>,
-    document.querySelector("body")
+    document.querySelector("#modals")
   );
 }
