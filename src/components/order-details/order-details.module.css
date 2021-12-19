@@ -4,11 +4,6 @@
   align-items: center;
 }
 
-.header {
-  align-self: flex-end;
-  display: flex;
-}
-
 .checkmark {
   width: 120px;
 }

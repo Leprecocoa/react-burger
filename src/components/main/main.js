@@ -6,12 +6,12 @@ import {
   Tab,
 } from "@ya.praktikum/react-developer-burger-ui-components";
 import { useCallback, useState } from "react";
-import { IngredientDetailsModal } from "../ingredient-details-modal/ingredient-details-modal";
 import IngredientsSection from "../ingredients-section/ingredients-section";
-import { OrderDetailsModal } from "../order-details-modal/order-details-modal";
 import mainSectionStyles from "./main.module.css";
 import PropTypes from "prop-types";
 import { ingredientType } from "../../utils/types";
+import { OrderDetails } from "../order-details/order-details";
+import { IngredientDetails } from "../ingredient-details/ingredient-details";
 
 Main.propTypes = {
   ingredients: PropTypes.arrayOf(ingredientType).isRequired,
@@ -38,7 +38,6 @@ function Main({ ingredients }) {
   const handleOrderDetailsClose = useCallback(() => {
     setOrder(null);
   }, []);
-  console.log('in', ingredients)
   return (
     <main className={`${mainSectionStyles.main} pb-10`}>
       <section
@@ -121,11 +120,11 @@ function Main({ ingredients }) {
           </Button>
         </div>
       </section>
-      <IngredientDetailsModal
+      <IngredientDetails
         ingredient={selectedIngredient}
         onClose={handleIngredientDetailsClose}
       />
-      <OrderDetailsModal order={order} onClose={handleOrderDetailsClose} />
+      <OrderDetails order={order} onClose={handleOrderDetailsClose} />
     </main>
   );
 }
