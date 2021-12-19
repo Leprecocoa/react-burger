@@ -1,0 +1,42 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header > * {
+  display: flex;
+  flex-grow: 1;
+  flex-basis: 0;
+  justify-content: center;
+}
+
+.header > :first-child {
+  justify-content: flex-start;
+}
+
+.header > :last-child {
+  justify-content: flex-end;
+}
+
+.nav {
+  display: flex;
+  margin-left: -20px;
+}
+
+.navLink {
+  display: flex;
+  border: none;
+  background: none;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+}
+
+.navLinkInactive {
+  color: #8585ad;
+}
+
+.auth {
+  margin-right: -20px;
+}
