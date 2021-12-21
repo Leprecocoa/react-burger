@@ -1,0 +1,16 @@
+.ingredients_list {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.ingredients_list_title {
+  width: 100%;
+}
+
+.cards_box {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  width: 100%;
+}
