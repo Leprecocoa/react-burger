@@ -1,9 +1,11 @@
 import { Tab } from "@ya.praktikum/react-developer-burger-ui-components";
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
+import { BurgerContext } from "../../utils/burger-context";
 import IngredientsSection from "../ingredients-section/ingredients-section";
 import burgerIngredientsStyles from "./burger-ingredients.module.css";
 
-function BurgerIngredients({ ingredients, handleIngredientDetailsOpen }) {
+function BurgerIngredients({ handleIngredientDetailsOpen }) {
+  const ingredients = useContext(BurgerContext);
   const [tab, setTab] = useState("bun");
   const bunRef = useRef();
   const sauceRef = useRef();

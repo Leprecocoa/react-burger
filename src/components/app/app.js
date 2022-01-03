@@ -1,7 +1,7 @@
 import Header from "../header/header.js";
 import appstyles from "./app.module.css";
 import Main from "../main/main.js";
-import { useIngredients } from "../../utils/use-ingredients.js";
+import { useIngredients } from "../../utils/api.js";
 import { BurgerContext } from "../../utils/burger-context.js";
 
 function App() {
@@ -10,7 +10,7 @@ function App() {
     <BurgerContext.Provider value={ingredients}>
       <div className={appstyles.page}>
         <Header />
-        <Main ingredients={ingredients} />
+        <Main />
       </div>
     </BurgerContext.Provider>
   );

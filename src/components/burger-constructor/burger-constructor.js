@@ -4,26 +4,45 @@ import {
   CurrencyIcon,
   DragIcon,
 } from "@ya.praktikum/react-developer-burger-ui-components";
-import { useContext } from "react";
+import { useCallback, useContext, useMemo } from "react";
 import { BurgerContext } from "../../utils/burger-context";
 import burgerConstructorStyles from "./burger-constructor.module.css";
 
-function BurgerConstructor({ handleOrderDetailsOpen }) {
+function BurgerConstructor({ onSubmit }) {
   const ingredients = useContext(BurgerContext);
-  const bunIngredient = ingredients.find((ingredient) => {
-    return ingredient.type === "bun";
-  });
-  const ingredientsArray = ingredients.filter((ingredient) => {
-    return ingredient.type !== "bun";
-  });
-  const ingredientsSum = ingredientsArray.reduce(function (summ, current) {
-    return summ + current.price;
-  }, 0);
+
+  const bun = useMemo(
+    () => ingredients.find((ingredient) => ingredient.type === "bun"),
+    [ingredients]
+  );
+
+  const selectedIngredients = useMemo(
+    () => ingredients.filter((ingredient) => ingredient.type !== "bun"),
+    [ingredients]
+  );
+
+  const orderSum = useMemo(() => {
+    if (!bun) {
+      return null;
+    }
+    const sum = selectedIngredients.reduce((acc, current) => {
+      return acc + current.price;
+    }, 0);
+    return sum + bun.price * 2;
+  }, [bun, selectedIngredients]);
+
+  const handleSubmit = useCallback(() => {
+    onSubmit(
+      selectedIngredients
+        .map((ingredient) => ingredient._id)
+        .concat([bun._id, bun._id])
+    );
+  }, [onSubmit, selectedIngredients, bun]);
+
   if (ingredients.length === 0) {
     return null;
   }
-  const orderSum = ingredientsSum + bunIngredient.price * 2;
-  console.log(orderSum);
+
   return (
     <section className={`${burgerConstructorStyles.constructor_section} pt-25`}>
       <div className={burgerConstructorStyles.constructor_list}>
@@ -31,9 +50,9 @@ function BurgerConstructor({ handleOrderDetailsOpen }) {
           <ConstructorElement
             type="top"
             isLocked={true}
-            text={bunIngredient.name}
-            price={bunIngredient.price}
-            thumbnail={bunIngredient.image}
+            text={bun.name}
+            price={bun.price}
+            thumbnail={bun.image}
           />
         </div>
         <div
@@ -67,9 +86,9 @@ function BurgerConstructor({ handleOrderDetailsOpen }) {
           <ConstructorElement
             type="bottom"
             isLocked={true}
-            text={bunIngredient.name}
-            price={bunIngredient.price}
-            thumbnail={bunIngredient.image}
+            text={bun.name}
+            price={bun.price}
+            thumbnail={bun.image}
           />
         </div>
       </div>
@@ -78,7 +97,7 @@ function BurgerConstructor({ handleOrderDetailsOpen }) {
           <span className="text text_type_digits-medium mr-2">{orderSum}</span>
           <CurrencyIcon type="primary" />
         </div>
-        <Button type="primary" size="large" onClick={handleOrderDetailsOpen}>
+        <Button type="primary" size="large" onClick={handleSubmit}>
           Оформить заказ
         </Button>
       </div>
