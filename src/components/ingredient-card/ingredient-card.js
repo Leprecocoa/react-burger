@@ -9,7 +9,7 @@ import { ingredientType } from "../../utils/types";
 
 IngredientCard.propTypes = {
   ingredient: ingredientType.isRequired,
-  onIngredientClick: PropTypes.func.isRequired
+  onIngredientClick: PropTypes.func.isRequired,
 };
 
 function IngredientCard({ ingredient, onIngredientClick }) {
@@ -24,7 +24,9 @@ function IngredientCard({ ingredient, onIngredientClick }) {
       <Counter count={233} size="small" />
       <img src={ingredient.image} alt={ingredient.name} />
       <div className={`${ingredientCard.price} mt-1 mb-1`}>
-        <span className="text text_type_main-default mr-2">20</span>{" "}
+        <span className="text text_type_main-default mr-2">
+          {ingredient.price}
+        </span>{" "}
         <CurrencyIcon type="primary" />
       </div>
       <p>{ingredient.name}</p>

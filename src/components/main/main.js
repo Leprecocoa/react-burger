@@ -7,6 +7,7 @@ import { IngredientDetails } from "../ingredient-details/ingredient-details";
 import { Modal } from "../modal/modal";
 import BurgerIngredients from "../burger-ingredients/burger-ingredients";
 import BurgerConstructor from "../burger-constructor/burger-constructor";
+// import { BurgerContext } from "../../utils/burger-context";
 
 Main.propTypes = {
   ingredients: PropTypes.arrayOf(ingredientType).isRequired,
@@ -31,8 +32,8 @@ function Main({ ingredients }) {
   return (
     <main className={`${mainSectionStyles.main} pb-10`}>
       <BurgerIngredients
-        handleIngredientDetailsOpen={handleIngredientDetailsOpen}
         ingredients={ingredients}
+        handleIngredientDetailsOpen={handleIngredientDetailsOpen}
       />
       <BurgerConstructor
         ingredients={ingredients}
