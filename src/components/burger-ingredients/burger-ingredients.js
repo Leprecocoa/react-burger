@@ -3,6 +3,11 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { BurgerContext } from "../../utils/burger-context";
 import IngredientsSection from "../ingredients-section/ingredients-section";
 import burgerIngredientsStyles from "./burger-ingredients.module.css";
+import PropTypes from "prop-types";
+
+BurgerIngredients.propTypes = {
+  handleIngredientDetailsOpen: PropTypes.func.isRequired,
+};
 
 function BurgerIngredients({ handleIngredientDetailsOpen }) {
   const ingredients = useContext(BurgerContext);

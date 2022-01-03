@@ -3,10 +3,13 @@ import checkIcon from "../../images/check.svg";
 import PropTypes from "prop-types";
 
 OrderDetails.propTypes = {
-  order: PropTypes.any,
+  order: PropTypes.shape({ number: PropTypes.number.isRequired }),
 };
 
 export function OrderDetails({ order }) {
+  if (!order) {
+    return null;
+  }
   return (
     <div className={`${orderDetailsStyles.details} pb-30`}>
       <p

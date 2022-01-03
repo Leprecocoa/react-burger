@@ -5,8 +5,13 @@ import {
   DragIcon,
 } from "@ya.praktikum/react-developer-burger-ui-components";
 import { useCallback, useContext, useMemo } from "react";
+import PropTypes from "prop-types";
 import { BurgerContext } from "../../utils/burger-context";
 import burgerConstructorStyles from "./burger-constructor.module.css";
+
+BurgerConstructor.propTypes = {
+  onSubmit: PropTypes.func.isRequired,
+};
 
 function BurgerConstructor({ onSubmit }) {
   const ingredients = useContext(BurgerContext);
@@ -58,29 +63,25 @@ function BurgerConstructor({ onSubmit }) {
         <div
           className={`${burgerConstructorStyles.constructor_items} ${burgerConstructorStyles.scrollbar}  mt-4 mb-4 pl-4 pr-4`}
         >
-          {ingredients
-            .filter((ingredient) => {
-              return ingredient.type !== "bun";
-            })
-            .map((ingredient) => {
-              return (
-                <div
-                  className={`${burgerConstructorStyles.constructor_item} mb-4 pl-8`}
-                  key={ingredient._id}
-                >
-                  <div className={burgerConstructorStyles.ingredient_button}>
-                    <button className={burgerConstructorStyles.drag_button}>
-                      <DragIcon type="primary" />
-                    </button>
-                  </div>
-                  <ConstructorElement
-                    text={ingredient.name}
-                    price={ingredient.price}
-                    thumbnail={ingredient.image}
-                  />
+          {selectedIngredients.map((ingredient) => {
+            return (
+              <div
+                className={`${burgerConstructorStyles.constructor_item} mb-4 pl-8`}
+                key={ingredient._id}
+              >
+                <div className={burgerConstructorStyles.ingredient_button}>
+                  <button className={burgerConstructorStyles.drag_button}>
+                    <DragIcon type="primary" />
+                  </button>
                 </div>
-              );
-            })}
+                <ConstructorElement
+                  text={ingredient.name}
+                  price={ingredient.price}
+                  thumbnail={ingredient.image}
+                />
+              </div>
+            );
+          })}
         </div>
         <div className="pl-9 pr-4">
           <ConstructorElement

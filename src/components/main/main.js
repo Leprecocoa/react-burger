@@ -7,8 +7,6 @@ import BurgerIngredients from "../burger-ingredients/burger-ingredients";
 import BurgerConstructor from "../burger-constructor/burger-constructor";
 import { sendOrder } from "../../utils/api";
 
-Main.propTypes = {};
-
 function Main() {
   const [selectedIngredient, setSelectedIngredient] = useState(null);
 

@@ -3,6 +3,14 @@ import modalStyles from "./modal.module.css";
 import { createPortal } from "react-dom";
 import { ModalOverlay } from "../modal-overlay/modal-overlay";
 import { CloseIcon } from "@ya.praktikum/react-developer-burger-ui-components";
+import PropTypes from "prop-types";
+
+Modal.propTypes = {
+  children: PropTypes.node.isRequired,
+  title: PropTypes.string,
+  onClose: PropTypes.func.isRequired,
+  isVisible: PropTypes.bool.isRequired,
+};
 
 export function Modal({ children, title, onClose, isVisible }) {
   useEffect(() => {
