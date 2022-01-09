@@ -11,37 +11,53 @@ BurgerIngredients.propTypes = {
 };
 
 function BurgerIngredients({ handleIngredientDetailsOpen, ingredients }) {
-  const [tab, setTab] = useState("bun");
+  // const [tab, setTab] = useState("bun");
+  const [current, setCurrent] = useState("bun");
   const bunRef = useRef();
   const sauceRef = useRef();
   const mainRef = useRef();
+
   useEffect(() => {
-    if (tab === "bun") {
+    if (current === "bun") {
       bunRef.current.scrollIntoView({ behavior: "smooth" });
-    } else if (tab === "sauce") {
+    } else if (current === "sauce") {
       sauceRef.current.scrollIntoView({ behavior: "smooth" });
-    } else if (tab === "main") {
+    } else if (current === "main") {
       mainRef.current.scrollIntoView({ behavior: "smooth" });
     }
-  }, [tab]);
+  }, [current]);
+
   return (
     <section
       className={`${burgerIngredientsStyles.ingredients_section} pt-10 mr-10`}
     >
       <h1 className="text text_type_main-large">Соберите бургер</h1>
       <div className={`${burgerIngredientsStyles.ingredients_tabs} pt-5`}>
-        <Tab value="bun" active={tab === "bun"} onClick={setTab}>
+        <Tab value="bun" active={current === "bun"} onClick={setCurrent}>
           Булки
         </Tab>
-        <Tab value="sauce" active={tab === "sauce"} onClick={setTab}>
+        <Tab value="sauce" active={current === "sauce"} onClick={setCurrent}>
           Соусы
         </Tab>
-        <Tab value="main" active={tab === "main"} onClick={setTab}>
+        <Tab value="main" active={current === "main"} onClick={setCurrent}>
           Начинки
         </Tab>
       </div>
       <div
         className={`${burgerIngredientsStyles.scrollbox} ${burgerIngredientsStyles.scrollbar}`}
+        onScroll={(evt) => {
+          const container = evt.target;
+          const scrollPosition = container.scrollTop;
+          const positionOfSection2 = sauceRef.current.offsetTop;
+          const positionOfSection3 = mainRef.current.offsetTop;
+          if (scrollPosition + 200 <= positionOfSection2) {
+            setCurrent("bun");
+          } else if (scrollPosition + 200 <= positionOfSection3) {
+            setCurrent("sauce");
+          } else {
+            setCurrent("main");
+          }
+        }}
       >
         <IngredientsSection
           ref={bunRef}

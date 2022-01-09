@@ -50,12 +50,14 @@
 }
 
 .scrollbox {
+  align-self: flex-end;
   max-height: calc(100vh - 284px);
   min-height: 510px;
   overflow-y: scroll;
 }
 
 .scrollbar {
+  align-self: flex-end;
   scrollbar-color: #8585ad #2f2f37;
   scrollbar-width: thin;
 }

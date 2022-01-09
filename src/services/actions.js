@@ -42,7 +42,6 @@ export function getOrderNumber(ingredientIds) {
       type: GET_ORDER_NUMBER_REQUEST,
     });
     sendOrder(ingredientIds).then((res) => {
-      console.log("getOrderNumber", res);
       if (res && res.success) {
         dispatch({
           type: GET_ORDER_NUMBER_SUCCESS,
