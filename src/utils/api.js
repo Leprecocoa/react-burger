@@ -1,23 +1,13 @@
-import { useEffect, useState } from "react";
-
 const API_URL = "https://norma.nomoreparties.space/api";
 const checkResponse = (res) => {
-  if (res.ok) {
+  if (res && res.ok) {
     return res.json();
   }
   return Promise.reject(`Ошибка: ${res.status}`);
 };
 
-export function useIngredients() {
-  const [ingredients, setIngredients] = useState([]);
-  useEffect(() => {
-    fetch(`${API_URL}/ingredients`)
-      .then((res) => checkResponse(res))
-      .then((json) => json.data)
-      .then(setIngredients)
-      .catch((err) => console.log(err));
-  }, []);
-  return { ingredients };
+export function getIngredients() {
+  return fetch(`${API_URL}/ingredients`).then((res) => checkResponse(res));
 }
 
 export function sendOrder(ingredientIds) {
@@ -31,6 +21,5 @@ export function sendOrder(ingredientIds) {
     }),
   })
     .then((res) => checkResponse(res))
-    .then((json) => json)
-    .catch((err) => console.log(err));
+    .then((json) => json);
 }

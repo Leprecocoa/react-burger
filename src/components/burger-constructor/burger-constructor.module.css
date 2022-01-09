@@ -1,5 +1,7 @@
 .constructor_section {
   max-width: 600px;
+  display: flex;
+  flex-direction: column;
 }
 
 .constructor_list {
@@ -44,6 +46,7 @@
   display: flex;
   justify-content: flex-end;
   align-items: center;
+  margin-top: auto;
 }
 
 .scrollbox {

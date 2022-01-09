@@ -4,18 +4,15 @@ import {
   CurrencyIcon,
   DragIcon,
 } from "@ya.praktikum/react-developer-burger-ui-components";
-import { useCallback, useContext, useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import PropTypes from "prop-types";
-import { BurgerContext } from "../../utils/burger-context";
 import burgerConstructorStyles from "./burger-constructor.module.css";
 
 BurgerConstructor.propTypes = {
   onSubmit: PropTypes.func.isRequired,
 };
 
-function BurgerConstructor({ onSubmit }) {
-  const ingredients = useContext(BurgerContext);
-
+function BurgerConstructor({ onSubmit, ingredients }) {
   const bun = useMemo(
     () => ingredients.find((ingredient) => ingredient.type === "bun"),
     [ingredients]

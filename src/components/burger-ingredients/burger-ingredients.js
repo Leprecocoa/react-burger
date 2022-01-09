@@ -1,6 +1,5 @@
 import { Tab } from "@ya.praktikum/react-developer-burger-ui-components";
-import { useContext, useEffect, useRef, useState } from "react";
-import { BurgerContext } from "../../utils/burger-context";
+import { useEffect, useRef, useState } from "react";
 import IngredientsSection from "../ingredients-section/ingredients-section";
 import burgerIngredientsStyles from "./burger-ingredients.module.css";
 import PropTypes from "prop-types";
@@ -9,8 +8,7 @@ BurgerIngredients.propTypes = {
   handleIngredientDetailsOpen: PropTypes.func.isRequired,
 };
 
-function BurgerIngredients({ handleIngredientDetailsOpen }) {
-  const ingredients = useContext(BurgerContext);
+function BurgerIngredients({ handleIngredientDetailsOpen, ingredients }) {
   const [tab, setTab] = useState("bun");
   const bunRef = useRef();
   const sauceRef = useRef();
