@@ -3,9 +3,11 @@ import { useEffect, useRef, useState } from "react";
 import IngredientsSection from "../ingredients-section/ingredients-section";
 import burgerIngredientsStyles from "./burger-ingredients.module.css";
 import PropTypes from "prop-types";
+import { ingredientType } from "../../utils/types";
 
 BurgerIngredients.propTypes = {
   handleIngredientDetailsOpen: PropTypes.func.isRequired,
+  ingredients: PropTypes.arrayOf(ingredientType),
 };
 
 function BurgerIngredients({ handleIngredientDetailsOpen, ingredients }) {

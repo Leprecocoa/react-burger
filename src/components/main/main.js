@@ -4,7 +4,7 @@ import { OrderDetails } from "../order-details/order-details";
 import { IngredientDetails } from "../ingredient-details/ingredient-details";
 import { Modal } from "../modal/modal";
 import BurgerIngredients from "../burger-ingredients/burger-ingredients";
-import BurgerConstructor from "../burger-constructor/burger-constructor";
+import BurgerConstructorDroppable from "../burger-constructor-droppable/burger-constructor-droppable";
 import { useDispatch, useSelector } from "react-redux";
 import {
   DELETE_ORDER_DATA,
@@ -17,13 +17,30 @@ import {
 function Main() {
   const dispatch = useDispatch();
 
-  const { ingredients, selectedIngredient, order } = useSelector((store) => {
-    return {
-      ingredients: store.reducer.ingredients,
-      selectedIngredient: store.reducer.selectedIngredient,
-      order: store.reducer.order,
-    };
-  });
+  const { ingredients, selectedIngredient, order } = useSelector(
+    ({
+      reducer: {
+        ingredients,
+        selectedIngredients,
+        order,
+        selectedIngredient,
+        selectedBun,
+      },
+    }) => {
+      return {
+        ingredients: ingredients.map((ingredient) => ({
+          ...ingredient,
+          count:
+            ingredient.type === "bun" && selectedBun === ingredient._id
+              ? 1
+              : selectedIngredients.filter((id) => id === ingredient._id)
+                  .length,
+        })),
+        selectedIngredient,
+        order,
+      };
+    }
+  );
 
   const handleIngredientDetailsOpen = useCallback(
     (ingredient) => {
@@ -66,7 +83,7 @@ function Main() {
         handleIngredientDetailsOpen={handleIngredientDetailsOpen}
         ingredients={ingredients}
       />
-      <BurgerConstructor
+      <BurgerConstructorDroppable
         onSubmit={handleOrderDetailsOpen}
         ingredients={ingredients}
       />

@@ -8,12 +8,15 @@ import {
   GET_ORDER_NUMBER_REQUEST,
   GET_ORDER_NUMBER_SUCCESS,
   SELECT_INGREDIENT,
+  DROP_INGREDIENT,
+  DELETE_IGREDIENT,
 } from "./actions";
 
 const initialState = {
   ingredients: [],
   selectedIngredients: [],
   selectedIngredient: null,
+  selectedBun: null,
   order: null,
   ingredientsRequest: false,
   ingredientsFailed: false,
@@ -35,6 +38,7 @@ export const reducer = (state = initialState, action) => {
         ingredientsFailed: false,
         ingredients: action.payload.ingredients,
         ingredientsRequest: false,
+        selectedBun: action.payload.ingredients.find(ingredient => ingredient.type === "bun")._id
       };
     }
     case GET_INGREDIENTS_FAILED: {
@@ -81,6 +85,37 @@ export const reducer = (state = initialState, action) => {
       return {
         ...state,
         order: null,
+      };
+    }
+    case DROP_INGREDIENT: {
+      const { ingredientId } = action.payload;
+
+      const getIsBun = (id) => {
+        const ingredient = state.ingredients.find(ingredient => ingredient._id === id) 
+        return ingredient && ingredient.type === "bun"
+      }
+
+      if (getIsBun(ingredientId)) {
+        return {
+          ...state,
+          selectedBun: ingredientId
+        }
+      }
+
+      return {
+        ...state,
+        selectedIngredients: [
+          ...state.selectedIngredients,
+          action.payload.ingredientId,
+        ],
+      };
+    }
+    case DELETE_IGREDIENT: {
+      return {
+        ...state,
+        selectedIngredients: state.selectedIngredients.filter(
+          (item, index) => index !== action.payload.deleteIndex
+        ),
       };
     }
     default:

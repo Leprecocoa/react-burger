@@ -11,6 +11,8 @@ export const GET_ORDER_NUMBER_REQUEST = "GET_ORDER_NUMBER_REQUEST";
 export const GET_ORDER_NUMBER_SUCCESS = "GET_ORDER_NUMBER_SUCCESS";
 export const GET_ORDER_NUMBER_FAILED = "GET_ORDER_NUMBER_FAILED";
 export const DELETE_ORDER_DATA = "DELETE_ORDER_DATA";
+export const DROP_INGREDIENT = "DROP_INGREDIENT";
+export const DELETE_IGREDIENT = "DELETE_IGREDIENT";
 
 export function getIngredientsApi() {
   return (dispatch) => {

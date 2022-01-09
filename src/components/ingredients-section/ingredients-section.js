@@ -1,4 +1,4 @@
-import IngredientCard from "../ingredient-card/ingredient-card";
+import IngredientCardDraggable from "../ingredient-card-draggable/ingredient-card-draggable";
 import ingredientsSectionStyles from "./ingredients-section.module.css";
 import PropTypes from "prop-types";
 import { ingredientType } from "../../utils/types";
@@ -23,10 +23,11 @@ const IngredientsSection = forwardRef(
             })
             .map((ingredient) => {
               return (
-                <IngredientCard
+                <IngredientCardDraggable
                   key={ingredient._id}
                   ingredient={ingredient}
                   onIngredientClick={onIngredientClick}
+                  count={ingredient.count}
                 />
               );
             })}

@@ -4,67 +4,85 @@ import {
   CurrencyIcon,
   DragIcon,
 } from "@ya.praktikum/react-developer-burger-ui-components";
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, forwardRef } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import PropTypes from "prop-types";
 import burgerConstructorStyles from "./burger-constructor.module.css";
+import { ingredientType } from "../../utils/types";
+import { DELETE_IGREDIENT } from "../../services/actions";
 
-BurgerConstructor.propTypes = {
-  onSubmit: PropTypes.func.isRequired,
-};
+const BurgerConstructor = forwardRef(({ onSubmit, ingredients }, ref) => {
+  const dispatch = useDispatch();
 
-function BurgerConstructor({ onSubmit, ingredients }) {
-  const bun = useMemo(
-    () => ingredients.find((ingredient) => ingredient.type === "bun"),
-    [ingredients]
+  const selectedIngredients = useSelector((store) =>
+    store.reducer.selectedIngredients.map((selectedIngredientId) =>
+      store.reducer.ingredients.find(
+        (ingredient) => ingredient._id === selectedIngredientId
+      )
+    )
   );
 
-  const selectedIngredients = useMemo(
-    () => ingredients.filter((ingredient) => ingredient.type !== "bun"),
-    [ingredients]
+  const selectedBun = useSelector(({ reducer: { ingredients, selectedBun } }) =>
+    ingredients.find((ingredient) => ingredient._id === selectedBun)
   );
 
   const orderSum = useMemo(() => {
-    if (!bun) {
-      return null;
-    }
-    const sum = selectedIngredients.reduce((acc, current) => {
-      return acc + current.price;
-    }, 0);
-    return sum + bun.price * 2;
-  }, [bun, selectedIngredients]);
+    const bunPrice = selectedBun ? selectedBun.price : 0;
+    return (
+      selectedIngredients.reduce(
+        (sum, ingredient) => sum + ingredient.price,
+        0
+      ) + bunPrice
+    );
+  }, [selectedIngredients, selectedBun]);
 
   const handleSubmit = useCallback(() => {
+    if (!selectedBun) {
+      return;
+    }
     onSubmit(
       selectedIngredients
         .map((ingredient) => ingredient._id)
-        .concat([bun._id, bun._id])
+        .concat(selectedBun._id)
     );
-  }, [onSubmit, selectedIngredients, bun]);
+  }, [onSubmit, selectedIngredients, selectedBun]);
+
+  const handleDelete = useCallback(
+    (deleteIndex) => {
+      dispatch({ type: DELETE_IGREDIENT, payload: { deleteIndex } });
+    },
+    [dispatch]
+  );
 
   if (ingredients.length === 0) {
     return null;
   }
 
   return (
-    <section className={`${burgerConstructorStyles.constructor_section} pt-25`}>
+    <section
+      className={`${burgerConstructorStyles.constructor_section} pt-25`}
+      ref={ref}
+    >
       <div className={burgerConstructorStyles.constructor_list}>
-        <div className="pl-9 pr-4">
-          <ConstructorElement
-            type="top"
-            isLocked={true}
-            text={`${bun.name} (верх)`}
-            price={bun.price}
-            thumbnail={bun.image}
-          />
-        </div>
+        {selectedBun ? (
+          <div className="pl-9 pr-4">
+            <ConstructorElement
+              type="top"
+              isLocked={true}
+              text={`${selectedBun.name} (верх)`}
+              price={selectedBun.price}
+              thumbnail={selectedBun.image}
+            />
+          </div>
+        ) : null}
         <div
           className={`${burgerConstructorStyles.constructor_items} ${burgerConstructorStyles.scrollbar}  mt-4 mb-4 pl-4 pr-4`}
         >
-          {selectedIngredients.map((ingredient) => {
+          {selectedIngredients.map((ingredient, index) => {
             return (
               <div
                 className={`${burgerConstructorStyles.constructor_item} mb-4 pl-8`}
-                key={ingredient._id}
+                key={`${ingredient._id}${index}`}
               >
                 <div className={burgerConstructorStyles.ingredient_button}>
                   <button className={burgerConstructorStyles.drag_button}>
@@ -75,20 +93,23 @@ function BurgerConstructor({ onSubmit, ingredients }) {
                   text={ingredient.name}
                   price={ingredient.price}
                   thumbnail={ingredient.image}
+                  handleClose={() => handleDelete(index)}
                 />
               </div>
             );
           })}
         </div>
-        <div className="pl-9 pr-4">
-          <ConstructorElement
-            type="bottom"
-            isLocked={true}
-            text={`${bun.name} (низ)`}
-            price={bun.price}
-            thumbnail={bun.image}
-          />
-        </div>
+        {selectedBun ? (
+          <div className="pl-9 pr-4">
+            <ConstructorElement
+              type="bottom"
+              isLocked={true}
+              text={`${selectedBun.name} (низ)`}
+              price={selectedBun.price}
+              thumbnail={selectedBun.image}
+            />
+          </div>
+        ) : null}
       </div>
       <div className={`${burgerConstructorStyles.order} pt-10`}>
         <div className={`${burgerConstructorStyles.order_price} mr-10`}>
@@ -101,6 +122,11 @@ function BurgerConstructor({ onSubmit, ingredients }) {
       </div>
     </section>
   );
-}
+});
+
+BurgerConstructor.propTypes = {
+  onSubmit: PropTypes.func.isRequired,
+  ingredients: PropTypes.arrayOf(ingredientType),
+};
 
 export default BurgerConstructor;
