@@ -10,6 +10,7 @@ import {
   SELECT_INGREDIENT,
   DROP_INGREDIENT,
   DELETE_IGREDIENT,
+  REORDER_CONSTRUCTOR_ITEM,
 } from "./actions";
 
 const initialState = {
@@ -22,6 +23,7 @@ const initialState = {
   ingredientsFailed: false,
   orderNumberRequest: false,
   orderNumberFailed: false,
+  constructorIngredients: [],
 };
 
 export const reducer = (state = initialState, action) => {
@@ -38,7 +40,9 @@ export const reducer = (state = initialState, action) => {
         ingredientsFailed: false,
         ingredients: action.payload.ingredients,
         ingredientsRequest: false,
-        selectedBun: action.payload.ingredients.find(ingredient => ingredient.type === "bun")._id
+        selectedBun: action.payload.ingredients.find(
+          (ingredient) => ingredient.type === "bun"
+        )._id,
       };
     }
     case GET_INGREDIENTS_FAILED: {
@@ -91,15 +95,17 @@ export const reducer = (state = initialState, action) => {
       const { ingredientId } = action.payload;
 
       const getIsBun = (id) => {
-        const ingredient = state.ingredients.find(ingredient => ingredient._id === id) 
-        return ingredient && ingredient.type === "bun"
-      }
+        const ingredient = state.ingredients.find(
+          (ingredient) => ingredient._id === id
+        );
+        return ingredient && ingredient.type === "bun";
+      };
 
       if (getIsBun(ingredientId)) {
         return {
           ...state,
-          selectedBun: ingredientId
-        }
+          selectedBun: ingredientId,
+        };
       }
 
       return {
@@ -116,6 +122,17 @@ export const reducer = (state = initialState, action) => {
         selectedIngredients: state.selectedIngredients.filter(
           (item, index) => index !== action.payload.deleteIndex
         ),
+      };
+    }
+    case REORDER_CONSTRUCTOR_ITEM: {
+      const { dragIndex, itemIndex } = action.payload;
+      const constructorItems = state.selectedIngredients;
+      let draggingItemIndex = constructorItems[dragIndex];
+      constructorItems[dragIndex] = constructorItems[itemIndex];
+      constructorItems[itemIndex] = draggingItemIndex;
+      return {
+        ...state,
+        selectedIngredients: constructorItems,
       };
     }
     default:

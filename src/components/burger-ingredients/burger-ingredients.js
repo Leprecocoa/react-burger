@@ -11,7 +11,6 @@ BurgerIngredients.propTypes = {
 };
 
 function BurgerIngredients({ handleIngredientDetailsOpen, ingredients }) {
-  // const [tab, setTab] = useState("bun");
   const [current, setCurrent] = useState("bun");
   const bunRef = useRef();
   const sauceRef = useRef();

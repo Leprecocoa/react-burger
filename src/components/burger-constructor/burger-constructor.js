@@ -2,7 +2,6 @@ import {
   Button,
   ConstructorElement,
   CurrencyIcon,
-  DragIcon,
 } from "@ya.praktikum/react-developer-burger-ui-components";
 import { useCallback, useMemo, forwardRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
@@ -10,6 +9,7 @@ import PropTypes from "prop-types";
 import burgerConstructorStyles from "./burger-constructor.module.css";
 import { ingredientType } from "../../utils/types";
 import { DELETE_IGREDIENT } from "../../services/actions";
+import BurgerConstructorItemDraggableDroppable from "../burger-constructor-item-draggable-droppable/burger-constructor-item-draggable-droppable";
 
 const BurgerConstructor = forwardRef(({ onSubmit, ingredients }, ref) => {
   const dispatch = useDispatch();
@@ -80,22 +80,12 @@ const BurgerConstructor = forwardRef(({ onSubmit, ingredients }, ref) => {
         >
           {selectedIngredients.map((ingredient, index) => {
             return (
-              <div
-                className={`${burgerConstructorStyles.constructor_item} mb-4 pl-8`}
+              <BurgerConstructorItemDraggableDroppable
+                ingredient={ingredient}
+                index={index}
+                handleDelete={handleDelete}
                 key={`${ingredient._id}${index}`}
-              >
-                <div className={burgerConstructorStyles.ingredient_button}>
-                  <button className={burgerConstructorStyles.drag_button}>
-                    <DragIcon type="primary" />
-                  </button>
-                </div>
-                <ConstructorElement
-                  text={ingredient.name}
-                  price={ingredient.price}
-                  thumbnail={ingredient.image}
-                  handleClose={() => handleDelete(index)}
-                />
-              </div>
+              />
             );
           })}
         </div>
