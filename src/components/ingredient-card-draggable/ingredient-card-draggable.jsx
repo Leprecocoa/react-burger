@@ -10,10 +10,9 @@ IngredientCardDraggable.propTypes = {
 };
 
 function IngredientCardDraggable({ ingredient, onIngredientClick, count }) {
-  const { _id } = ingredient;
   const [, dragRef] = useDrag({
     type: "ingredient",
-    item: { id: _id },
+    item: { ingredient },
   });
   return (
     <IngredientCard

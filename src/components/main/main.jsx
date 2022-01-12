@@ -19,23 +19,11 @@ function Main() {
 
   const { ingredients, selectedIngredient, order } = useSelector(
     ({
-      reducer: {
-        ingredients,
-        selectedIngredients,
-        order,
-        selectedIngredient,
-        selectedBun,
-      },
+      ingredients: { ingredients, selectedIngredient },
+      order: { order },
     }) => {
       return {
-        ingredients: ingredients.map((ingredient) => ({
-          ...ingredient,
-          count:
-            ingredient.type === "bun" && selectedBun === ingredient._id
-              ? 1
-              : selectedIngredients.filter((id) => id === ingredient._id)
-                  .length,
-        })),
+        ingredients,
         selectedIngredient,
         order,
       };
@@ -65,8 +53,8 @@ function Main() {
   }, [dispatch]);
 
   const handleOrderDetailsOpen = useCallback(
-    (ingredientIds) => {
-      dispatch(getOrderNumber(ingredientIds));
+    (ingredients) => {
+      dispatch(getOrderNumber(ingredients.map((ingredient) => ingredient._id)));
     },
     [dispatch]
   );

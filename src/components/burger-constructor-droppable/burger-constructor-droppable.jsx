@@ -14,10 +14,11 @@ function BurgerConstructorDroppable({ onSubmit, ingredients }) {
   const dispatch = useDispatch();
   const [, dropTarget] = useDrop({
     accept: "ingredient",
-    drop({ id }) {
-      dispatch({ type: DROP_INGREDIENT, payload: { ingredientId: id } });
+    drop({ ingredient }) {
+      dispatch({ type: DROP_INGREDIENT, payload: { ingredient } });
     },
   });
+
   return (
     <BurgerConstructor
       onSubmit={onSubmit}

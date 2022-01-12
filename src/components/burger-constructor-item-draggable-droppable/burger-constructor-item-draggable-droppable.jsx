@@ -19,11 +19,10 @@ function BurgerConstructorItemDraggableDroppable({
 }) {
   const ref = useRef(null);
   const dispatch = useDispatch();
-  const { _id } = ingredient;
 
   const [, dragRef] = useDrag({
     type: "constructor-item",
-    item: { id: _id, dragIndex: index },
+    item: { dragIndex: index },
   });
 
   const [, dropTarget] = useDrop({

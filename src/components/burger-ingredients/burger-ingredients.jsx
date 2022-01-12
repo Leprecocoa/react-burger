@@ -1,9 +1,12 @@
 import { Tab } from "@ya.praktikum/react-developer-burger-ui-components";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState, useMemo } from "react";
+import { useSelector } from "react-redux";
 import IngredientsSection from "../ingredients-section/ingredients-section";
 import burgerIngredientsStyles from "./burger-ingredients.module.css";
 import PropTypes from "prop-types";
 import { ingredientType } from "../../utils/types";
+
+const HEIGHT_FROM_TOP = 200;
 
 BurgerIngredients.propTypes = {
   handleIngredientDetailsOpen: PropTypes.func.isRequired,
@@ -11,20 +14,38 @@ BurgerIngredients.propTypes = {
 };
 
 function BurgerIngredients({ handleIngredientDetailsOpen, ingredients }) {
+  const { selectedIngredients, selectedBun } = useSelector(
+    ({ burgerConstructor: { selectedIngredients, selectedBun } }) => {
+      return {
+        selectedIngredients,
+        selectedBun,
+      };
+    }
+  );
+
+  const counts = useMemo(() => {
+    return ingredients.reduce((acc, ingredient) => {
+      if (ingredient.type === "bun") {
+        return {
+          ...acc,
+          [ingredient._id]:
+            selectedBun && ingredient._id === selectedBun._id ? 1 : 0,
+        };
+      }
+      return {
+        ...acc,
+        [ingredient._id]: selectedIngredients.filter(
+          (selectedIngredient) => selectedIngredient._id === ingredient._id
+        ).length,
+      };
+    }, {});
+  }, [ingredients, selectedIngredients, selectedBun]);
+
   const [current, setCurrent] = useState("bun");
+
   const bunRef = useRef();
   const sauceRef = useRef();
   const mainRef = useRef();
-
-  useEffect(() => {
-    if (current === "bun") {
-      bunRef.current.scrollIntoView({ behavior: "smooth" });
-    } else if (current === "sauce") {
-      sauceRef.current.scrollIntoView({ behavior: "smooth" });
-    } else if (current === "main") {
-      mainRef.current.scrollIntoView({ behavior: "smooth" });
-    }
-  }, [current]);
 
   return (
     <section
@@ -32,13 +53,25 @@ function BurgerIngredients({ handleIngredientDetailsOpen, ingredients }) {
     >
       <h1 className="text text_type_main-large">Соберите бургер</h1>
       <div className={`${burgerIngredientsStyles.ingredients_tabs} pt-5`}>
-        <Tab value="bun" active={current === "bun"} onClick={setCurrent}>
+        <Tab
+          value="bun"
+          active={current === "bun"}
+          onClick={() => setCurrent("bun")}
+        >
           Булки
         </Tab>
-        <Tab value="sauce" active={current === "sauce"} onClick={setCurrent}>
+        <Tab
+          value="sauce"
+          active={current === "sauce"}
+          onClick={() => setCurrent("sauce")}
+        >
           Соусы
         </Tab>
-        <Tab value="main" active={current === "main"} onClick={setCurrent}>
+        <Tab
+          value="main"
+          active={current === "main"}
+          onClick={() => setCurrent("main")}
+        >
           Начинки
         </Tab>
       </div>
@@ -47,11 +80,11 @@ function BurgerIngredients({ handleIngredientDetailsOpen, ingredients }) {
         onScroll={(evt) => {
           const container = evt.target;
           const scrollPosition = container.scrollTop;
-          const positionOfSection2 = sauceRef.current.offsetTop;
-          const positionOfSection3 = mainRef.current.offsetTop;
-          if (scrollPosition + 200 <= positionOfSection2) {
+          const saucePosition = sauceRef.current.offsetTop;
+          const mainPosition = mainRef.current.offsetTop;
+          if (scrollPosition + HEIGHT_FROM_TOP <= saucePosition) {
             setCurrent("bun");
-          } else if (scrollPosition + 200 <= positionOfSection3) {
+          } else if (scrollPosition + HEIGHT_FROM_TOP <= mainPosition) {
             setCurrent("sauce");
           } else {
             setCurrent("main");
@@ -64,6 +97,7 @@ function BurgerIngredients({ handleIngredientDetailsOpen, ingredients }) {
           title="Булки"
           type="bun"
           ingredients={ingredients}
+          counts={counts}
           onIngredientClick={handleIngredientDetailsOpen}
         />
         <IngredientsSection
@@ -72,6 +106,7 @@ function BurgerIngredients({ handleIngredientDetailsOpen, ingredients }) {
           title="Соусы"
           type="sauce"
           ingredients={ingredients}
+          counts={counts}
           onIngredientClick={handleIngredientDetailsOpen}
         />
         <IngredientsSection
@@ -80,6 +115,7 @@ function BurgerIngredients({ handleIngredientDetailsOpen, ingredients }) {
           title="Начинки"
           type="main"
           ingredients={ingredients}
+          counts={counts}
           onIngredientClick={handleIngredientDetailsOpen}
         />
       </div>

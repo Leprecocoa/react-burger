@@ -13,24 +13,21 @@ import {
   REORDER_CONSTRUCTOR_ITEM,
 } from "./actions";
 
-const initialState = {
+// ingredients reducer
+
+const ingredientsInitialState = {
   ingredients: [],
-  selectedIngredients: [],
-  selectedIngredient: null,
-  selectedBun: null,
-  order: null,
   ingredientsRequest: false,
   ingredientsFailed: false,
-  orderNumberRequest: false,
-  orderNumberFailed: false,
-  constructorIngredients: [],
+  selectedIngredient: null,
 };
 
-export const reducer = (state = initialState, action) => {
+export const ingredientsReducer = (state = ingredientsInitialState, action) => {
   switch (action.type) {
     case GET_INGREDIENTS_REQUEST: {
       return {
         ...state,
+        ingredientsFailed: false,
         ingredientsRequest: true,
       };
     }
@@ -38,11 +35,8 @@ export const reducer = (state = initialState, action) => {
       return {
         ...state,
         ingredientsFailed: false,
-        ingredients: action.payload.ingredients,
         ingredientsRequest: false,
-        selectedBun: action.payload.ingredients.find(
-          (ingredient) => ingredient.type === "bun"
-        )._id,
+        ingredients: action.payload.ingredients,
       };
     }
     case GET_INGREDIENTS_FAILED: {
@@ -50,6 +44,7 @@ export const reducer = (state = initialState, action) => {
         ...state,
         ingredientsFailed: true,
         ingredientsRequest: false,
+        ingredients: [],
       };
     }
     case SELECT_INGREDIENT: {
@@ -64,6 +59,69 @@ export const reducer = (state = initialState, action) => {
         selectedIngredient: null,
       };
     }
+    default: {
+      return state;
+    }
+  }
+};
+
+// burger constructor reducer
+
+const burgerConstructorInitialState = {
+  selectedIngredients: [],
+  selectedBun: null,
+};
+
+export const burgerConstructorReducer = (state = burgerConstructorInitialState, action) => {
+  switch (action.type) {
+    case DROP_INGREDIENT: {
+      const { ingredient } = action.payload;
+      if (ingredient.type === "bun") {
+        return {
+          ...state,
+          selectedBun: ingredient,
+        };
+      }
+      return {
+        ...state,
+        selectedIngredients: [...state.selectedIngredients, ingredient],
+      };
+    }
+    case DELETE_IGREDIENT: {
+      return {
+        ...state,
+        selectedIngredients: state.selectedIngredients.filter(
+          (item, index) => index !== action.payload.deleteIndex
+        ),
+      };
+    }
+    case REORDER_CONSTRUCTOR_ITEM: {
+      const { dragIndex, itemIndex } = action.payload;
+      const constructorItems = [...state.selectedIngredients];
+      let draggingItemIndex = constructorItems[dragIndex];
+      constructorItems[dragIndex] = constructorItems[itemIndex];
+      constructorItems[itemIndex] = draggingItemIndex;
+      return {
+        ...state,
+        selectedIngredients: constructorItems,
+      };
+    }
+    default: {
+      return state;
+    }
+  }
+};
+
+// order reducer
+
+const orderInitialState = {
+  order: null,
+  orderNumberRequest: false,
+  orderNumberFailed: false,
+};
+
+export const orderReducer = (state = orderInitialState, action) => {
+  switch (action.type) {
     case GET_ORDER_NUMBER_REQUEST: {
       return {
         ...state,
@@ -83,56 +141,13 @@ export const reducer = (state = initialState, action) => {
         ...state,
         orderNumberFailed: true,
         orderNumberRequest: false,
+        order: null,
       };
     }
     case DELETE_ORDER_DATA: {
       return {
         ...state,
         order: null,
-      };
-    }
-    case DROP_INGREDIENT: {
-      const { ingredientId } = action.payload;
-
-      const getIsBun = (id) => {
-        const ingredient = state.ingredients.find(
-          (ingredient) => ingredient._id === id
-        );
-        return ingredient && ingredient.type === "bun";
-      };
-
-      if (getIsBun(ingredientId)) {
-        return {
-          ...state,
-          selectedBun: ingredientId,
-        };
-      }
-
-      return {
-        ...state,
-        selectedIngredients: [
-          ...state.selectedIngredients,
-          action.payload.ingredientId,
-        ],
-      };
-    }
-    case DELETE_IGREDIENT: {
-      return {
-        ...state,
-        selectedIngredients: state.selectedIngredients.filter(
-          (item, index) => index !== action.payload.deleteIndex
-        ),
-      };
-    }
-    case REORDER_CONSTRUCTOR_ITEM: {
-      const { dragIndex, itemIndex } = action.payload;
-      const constructorItems = state.selectedIngredients;
-      let draggingItemIndex = constructorItems[dragIndex];
-      constructorItems[dragIndex] = constructorItems[itemIndex];
-      constructorItems[itemIndex] = draggingItemIndex;
-      return {
-        ...state,
-        selectedIngredients: constructorItems,
       };
     }
     default:

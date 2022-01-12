@@ -14,37 +14,27 @@ import BurgerConstructorItemDraggableDroppable from "../burger-constructor-item-
 const BurgerConstructor = forwardRef(({ onSubmit, ingredients }, ref) => {
   const dispatch = useDispatch();
 
-  const selectedIngredients = useSelector((store) =>
-    store.reducer.selectedIngredients.map((selectedIngredientId) =>
-      store.reducer.ingredients.find(
-        (ingredient) => ingredient._id === selectedIngredientId
-      )
-    )
+  const selectedIngredients = useSelector(
+    (state) => state.burgerConstructor.selectedIngredients
+  );
+  const selectedBun = useSelector(
+    (state) => state.burgerConstructor.selectedBun
   );
 
-  const selectedBun = useSelector(({ reducer: { ingredients, selectedBun } }) =>
-    ingredients.find((ingredient) => ingredient._id === selectedBun)
-  );
-
-  const orderSum = useMemo(() => {
-    const bunPrice = selectedBun ? selectedBun.price : 0;
-    return (
+  const orderSum = useMemo(
+    () =>
       selectedIngredients.reduce(
         (sum, ingredient) => sum + ingredient.price,
-        0
-      ) + bunPrice
-    );
-  }, [selectedIngredients, selectedBun]);
+        selectedBun ? selectedBun.price : 0
+      ),
+    [selectedIngredients, selectedBun]
+  );
 
   const handleSubmit = useCallback(() => {
     if (!selectedBun) {
       return;
     }
-    onSubmit(
-      selectedIngredients
-        .map((ingredient) => ingredient._id)
-        .concat(selectedBun._id)
-    );
+    onSubmit(selectedIngredients.concat(selectedBun));
   }, [onSubmit, selectedIngredients, selectedBun]);
 
   const handleDelete = useCallback(
@@ -64,17 +54,17 @@ const BurgerConstructor = forwardRef(({ onSubmit, ingredients }, ref) => {
       ref={ref}
     >
       <div className={burgerConstructorStyles.constructor_list}>
-        {selectedBun ? (
+        {selectedBun && (
           <div className="pl-9 pr-4">
             <ConstructorElement
               type="top"
-              isLocked={true}
+              isLocked
               text={`${selectedBun.name} (верх)`}
               price={selectedBun.price}
               thumbnail={selectedBun.image}
             />
           </div>
-        ) : null}
+        )}
         <div
           className={`${burgerConstructorStyles.constructor_items} ${burgerConstructorStyles.scrollbar}  mt-4 mb-4 pl-4 pr-4`}
         >

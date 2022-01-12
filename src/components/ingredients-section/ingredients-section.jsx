@@ -5,7 +5,7 @@ import { ingredientType } from "../../utils/types";
 import { forwardRef } from "react";
 
 const IngredientsSection = forwardRef(
-  ({ title, ingredients, type, onIngredientClick }, ref) => {
+  ({ title, ingredients, type, onIngredientClick, counts }, ref) => {
     return (
       <section
         ref={ref}
@@ -27,7 +27,7 @@ const IngredientsSection = forwardRef(
                   key={ingredient._id}
                   ingredient={ingredient}
                   onIngredientClick={onIngredientClick}
-                  count={ingredient.count}
+                  count={counts[ingredient._id]}
                 />
               );
             })}
@@ -42,6 +42,7 @@ IngredientsSection.propTypes = {
   ingredients: PropTypes.arrayOf(ingredientType).isRequired,
   type: PropTypes.string.isRequired,
   onIngredientClick: PropTypes.func.isRequired,
+  counts: PropTypes.shape({ [PropTypes.string]: PropTypes.number }).isRequired
 };
 
 export default IngredientsSection;
