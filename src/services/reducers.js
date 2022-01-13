@@ -41,10 +41,8 @@ export const ingredientsReducer = (state = ingredientsInitialState, action) => {
     }
     case GET_INGREDIENTS_FAILED: {
       return {
-        ...state,
+        ...ingredientsInitialState,
         ingredientsFailed: true,
-        ingredientsRequest: false,
-        ingredients: [],
       };
     }
     case SELECT_INGREDIENT: {
@@ -72,7 +70,10 @@ const burgerConstructorInitialState = {
   selectedBun: null,
 };
 
-export const burgerConstructorReducer = (state = burgerConstructorInitialState, action) => {
+export const burgerConstructorReducer = (
+  state = burgerConstructorInitialState,
+  action
+) => {
   switch (action.type) {
     case DROP_INGREDIENT: {
       const { ingredient } = action.payload;
@@ -138,10 +139,8 @@ export const orderReducer = (state = orderInitialState, action) => {
     }
     case GET_ORDER_NUMBER_FAILED: {
       return {
-        ...state,
+        ...orderInitialState,
         orderNumberFailed: true,
-        orderNumberRequest: false,
-        order: null,
       };
     }
     case DELETE_ORDER_DATA: {

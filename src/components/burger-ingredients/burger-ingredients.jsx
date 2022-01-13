@@ -1,5 +1,5 @@
 import { Tab } from "@ya.praktikum/react-developer-burger-ui-components";
-import { useRef, useState, useMemo } from "react";
+import { useRef, useState, useMemo, useCallback } from "react";
 import { useSelector } from "react-redux";
 import IngredientsSection from "../ingredients-section/ingredients-section";
 import burgerIngredientsStyles from "./burger-ingredients.module.css";
@@ -47,49 +47,60 @@ function BurgerIngredients({ handleIngredientDetailsOpen, ingredients }) {
   const sauceRef = useRef();
   const mainRef = useRef();
 
+  const handleBunTabClick = useCallback(() => setCurrent("bun"), [setCurrent]);
+  const handleSauceTabClick = useCallback(
+    () => setCurrent("sauce"),
+    [setCurrent]
+  );
+  const handleMainTabClick = useCallback(
+    () => setCurrent("main"),
+    [setCurrent]
+  );
+
+  const handleScroll = useCallback(
+    (evt) => {
+      const container = evt.target;
+      const scrollPosition = container.scrollTop;
+      const saucePosition = sauceRef.current.offsetTop;
+      const mainPosition = mainRef.current.offsetTop;
+      if (scrollPosition + HEIGHT_FROM_TOP <= saucePosition) {
+        handleBunTabClick();
+      } else if (scrollPosition + HEIGHT_FROM_TOP <= mainPosition) {
+        handleSauceTabClick();
+      } else {
+        handleMainTabClick();
+      }
+    },
+    [handleBunTabClick, handleMainTabClick, handleSauceTabClick]
+  );
+
   return (
     <section
       className={`${burgerIngredientsStyles.ingredients_section} pt-10 mr-10`}
     >
       <h1 className="text text_type_main-large">Соберите бургер</h1>
       <div className={`${burgerIngredientsStyles.ingredients_tabs} pt-5`}>
-        <Tab
-          value="bun"
-          active={current === "bun"}
-          onClick={() => setCurrent("bun")}
-        >
+        <Tab value="bun" active={current === "bun"} onClick={handleBunTabClick}>
           Булки
         </Tab>
         <Tab
           value="sauce"
           active={current === "sauce"}
-          onClick={() => setCurrent("sauce")}
+          onClick={handleSauceTabClick}
         >
           Соусы
         </Tab>
         <Tab
           value="main"
           active={current === "main"}
-          onClick={() => setCurrent("main")}
+          onClick={handleMainTabClick}
         >
           Начинки
         </Tab>
       </div>
       <div
         className={`${burgerIngredientsStyles.scrollbox} ${burgerIngredientsStyles.scrollbar}`}
-        onScroll={(evt) => {
-          const container = evt.target;
-          const scrollPosition = container.scrollTop;
-          const saucePosition = sauceRef.current.offsetTop;
-          const mainPosition = mainRef.current.offsetTop;
-          if (scrollPosition + HEIGHT_FROM_TOP <= saucePosition) {
-            setCurrent("bun");
-          } else if (scrollPosition + HEIGHT_FROM_TOP <= mainPosition) {
-            setCurrent("sauce");
-          } else {
-            setCurrent("main");
-          }
-        }}
+        onScroll={handleScroll}
       >
         <IngredientsSection
           ref={bunRef}

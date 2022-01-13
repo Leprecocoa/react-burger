@@ -2,13 +2,17 @@ import {
   ConstructorElement,
   DragIcon,
 } from "@ya.praktikum/react-developer-burger-ui-components";
-import { forwardRef } from "react";
+import { forwardRef, useCallback } from "react";
 import { ingredientType } from "../../utils/types";
 import BurgerConstructorItemStyles from "./burger-constructor-item.module.css";
 import PropTypes from "prop-types";
 
 const BurgerConstructorItem = forwardRef(
   ({ ingredient, index, handleDelete }, ref) => {
+    const handleClose = useCallback(
+      () => handleDelete(index),
+      [handleDelete, index]
+    );
     return (
       <div
         className={`${BurgerConstructorItemStyles.constructor_item} mb-4 pl-8`}
@@ -23,7 +27,7 @@ const BurgerConstructorItem = forwardRef(
           text={ingredient.name}
           price={ingredient.price}
           thumbnail={ingredient.image}
-          handleClose={() => handleDelete(index)}
+          handleClose={handleClose}
         />
       </div>
     );
