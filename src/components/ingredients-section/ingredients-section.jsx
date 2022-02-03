@@ -1,11 +1,11 @@
-import IngredientCard from "../ingredient-card/ingredient-card";
+import IngredientCardDraggable from "../ingredient-card-draggable/ingredient-card-draggable";
 import ingredientsSectionStyles from "./ingredients-section.module.css";
 import PropTypes from "prop-types";
 import { ingredientType } from "../../utils/types";
 import { forwardRef } from "react";
 
 const IngredientsSection = forwardRef(
-  ({ title, ingredients, type, onIngredientClick }, ref) => {
+  ({ title, ingredients, type, onIngredientClick, counts }, ref) => {
     return (
       <section
         ref={ref}
@@ -23,10 +23,11 @@ const IngredientsSection = forwardRef(
             })
             .map((ingredient) => {
               return (
-                <IngredientCard
+                <IngredientCardDraggable
                   key={ingredient._id}
                   ingredient={ingredient}
                   onIngredientClick={onIngredientClick}
+                  count={counts[ingredient._id]}
                 />
               );
             })}
@@ -41,6 +42,7 @@ IngredientsSection.propTypes = {
   ingredients: PropTypes.arrayOf(ingredientType).isRequired,
   type: PropTypes.string.isRequired,
   onIngredientClick: PropTypes.func.isRequired,
+  counts: PropTypes.shape({ [PropTypes.string]: PropTypes.number }).isRequired
 };
 
 export default IngredientsSection;

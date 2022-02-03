@@ -11,5 +11,6 @@ export const ingredientType = PropTypes.shape({
   price: PropTypes.number.isRequired,
   proteins: PropTypes.number.isRequired,
   type: PropTypes.string.isRequired,
-  _id: PropTypes.string.isRequired
+  _id: PropTypes.string.isRequired,
+  count: PropTypes.number
 });
