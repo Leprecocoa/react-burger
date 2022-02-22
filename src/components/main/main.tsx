@@ -13,6 +13,7 @@ import {
   getOrderNumber,
   SELECT_INGREDIENT,
 } from "../../services/actions";
+import { TIngredient } from "../../utils/types";
 
 function Main() {
   const dispatch = useDispatch();
@@ -21,6 +22,14 @@ function Main() {
     ({
       ingredients: { ingredients, selectedIngredient },
       order: { order },
+    }: {
+      ingredients: {
+        ingredients: Array<TIngredient>;
+        selectedIngredient: TIngredient;
+      };
+      order: {
+        order: { number: number };
+      };
     }) => {
       return {
         ingredients,
@@ -54,7 +63,11 @@ function Main() {
 
   const handleOrderDetailsOpen = useCallback(
     (ingredients) => {
-      dispatch(getOrderNumber(ingredients.map((ingredient) => ingredient._id)));
+      dispatch(
+        getOrderNumber(
+          ingredients.map((ingredient: TIngredient) => ingredient._id)
+        )
+      );
     },
     [dispatch]
   );

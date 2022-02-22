@@ -1,20 +1,22 @@
-import PropTypes from "prop-types";
 import { useDrop } from "react-dnd";
 import BurgerConstructor from "../burger-constructor/burger-constructor";
-import { ingredientType } from "../../utils/types";
+import {  TIngredient } from "../../utils/types";
 import { useDispatch } from "react-redux";
 import { DROP_INGREDIENT } from "../../services/actions";
 
-BurgerConstructorDroppable.propTypes = {
-  onSubmit: PropTypes.func.isRequired,
-  ingredients: PropTypes.arrayOf(ingredientType),
-};
+interface IBurgerConstructorDroppableProps {
+  onSubmit: (ingredients: Array<TIngredient>) => void;
+  ingredients: Array<TIngredient>;
+}
 
-function BurgerConstructorDroppable({ onSubmit, ingredients }) {
+function BurgerConstructorDroppable({
+  onSubmit,
+  ingredients,
+}: IBurgerConstructorDroppableProps) {
   const dispatch = useDispatch();
   const [, dropTarget] = useDrop({
     accept: "ingredient",
-    drop({ ingredient }) {
+    drop({ ingredient }: { ingredient: TIngredient }) {
       dispatch({ type: DROP_INGREDIENT, payload: { ingredient } });
     },
   });

@@ -20,20 +20,22 @@ export function getIngredientsApi() {
     dispatch({
       type: GET_INGREDIENTS_REQUEST,
     });
-    getIngredients().then((res) => {
-      if (res && res.success) {
-        dispatch({
-          type: GET_INGREDIENTS_SUCCESS,
-          payload: {
-            ingredients: res.data,
-          },
-        });
-      } else {
-        dispatch({
-          type: GET_INGREDIENTS_FAILED,
-        });
-      }
-    });
+    getIngredients()
+      .then((res) => {
+        if (res && res.success) {
+          dispatch({
+            type: GET_INGREDIENTS_SUCCESS,
+            payload: {
+              ingredients: res.data,
+            },
+          });
+        } else {
+          dispatch({
+            type: GET_INGREDIENTS_FAILED,
+          });
+        }
+      })
+      .catch((err) => console.log(err));
   };
 }
 

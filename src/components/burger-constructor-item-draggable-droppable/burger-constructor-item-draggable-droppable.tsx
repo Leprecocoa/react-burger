@@ -3,20 +3,19 @@ import { useDrag, useDrop } from "react-dnd";
 import { useDispatch } from "react-redux";
 import { REORDER_CONSTRUCTOR_ITEM } from "../../services/actions";
 import BurgerConstructorItem from "../burger-constructor-item/burger-constructor-item";
-import PropTypes from "prop-types";
-import { ingredientType } from "../../utils/types";
+import { TIngredient } from "../../utils/types";
 
-BurgerConstructorItemDraggableDroppable.propTypes = {
-  ingredient: ingredientType.isRequired,
-  index: PropTypes.number.isRequired,
-  handleDelete: PropTypes.func.isRequired,
-};
+interface IBurgerConstructorItemDraggableDroppableProps {
+  ingredient: TIngredient;
+  index: number;
+  handleDelete: (deleteIndex: number) => void;
+}
 
 function BurgerConstructorItemDraggableDroppable({
   ingredient,
   index,
   handleDelete,
-}) {
+}: IBurgerConstructorItemDraggableDroppableProps) {
   const ref = useRef(null);
   const dispatch = useDispatch();
 
@@ -27,7 +26,7 @@ function BurgerConstructorItemDraggableDroppable({
 
   const [, dropTarget] = useDrop({
     accept: "constructor-item",
-    drop({ dragIndex }) {
+    drop({ dragIndex }: { dragIndex: number }) {
       dispatch({
         type: REORDER_CONSTRUCTOR_ITEM,
         payload: {
