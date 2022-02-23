@@ -1,3 +1,4 @@
+import { TIngredient } from "../utils/types";
 import {
   DELETE_ORDER_DATA,
   DELETE_SELECTED_INGREDIENT_DATA,
@@ -11,18 +12,29 @@ import {
   DROP_INGREDIENT,
   DELETE_IGREDIENT,
   REORDER_CONSTRUCTOR_ITEM,
+  TActions,
 } from "./actions";
 
 // ingredients reducer
 
-const ingredientsInitialState = {
+type TIngredientsInitialState = {
+  ingredients: TIngredient[];
+  ingredientsRequest: boolean;
+  ingredientsFailed: boolean;
+  selectedIngredient: TIngredient | null;
+};
+
+const ingredientsInitialState: TIngredientsInitialState = {
   ingredients: [],
   ingredientsRequest: false,
   ingredientsFailed: false,
   selectedIngredient: null,
 };
 
-export const ingredientsReducer = (state = ingredientsInitialState, action) => {
+export const ingredientsReducer = (
+  state = ingredientsInitialState,
+  action: TActions
+) => {
   switch (action.type) {
     case GET_INGREDIENTS_REQUEST: {
       return {
@@ -65,14 +77,19 @@ export const ingredientsReducer = (state = ingredientsInitialState, action) => {
 
 // burger constructor reducer
 
-const burgerConstructorInitialState = {
+type TBurgerConstructorInitialState = {
+  selectedIngredients: TIngredient[];
+  selectedBun: TIngredient | null;
+};
+
+const burgerConstructorInitialState: TBurgerConstructorInitialState = {
   selectedIngredients: [],
   selectedBun: null,
 };
 
 export const burgerConstructorReducer = (
   state = burgerConstructorInitialState,
-  action
+  action: TActions
 ) => {
   switch (action.type) {
     case DROP_INGREDIENT: {
@@ -115,13 +132,19 @@ export const burgerConstructorReducer = (
 
 // order reducer
 
-const orderInitialState = {
+type TOrderInitialState = {
+  order: number | null;
+  orderNumberRequest: boolean;
+  orderNumberFailed: boolean;
+};
+
+const orderInitialState: TOrderInitialState = {
   order: null,
   orderNumberRequest: false,
   orderNumberFailed: false,
 };
 
-export const orderReducer = (state = orderInitialState, action) => {
+export const orderReducer = (state = orderInitialState, action: TActions) => {
   switch (action.type) {
     case GET_ORDER_NUMBER_REQUEST: {
       return {

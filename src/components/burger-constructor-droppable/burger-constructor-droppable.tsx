@@ -1,6 +1,6 @@
 import { useDrop } from "react-dnd";
 import BurgerConstructor from "../burger-constructor/burger-constructor";
-import {  TIngredient } from "../../utils/types";
+import { TIngredient } from "../../utils/types";
 import { useDispatch } from "react-redux";
 import { DROP_INGREDIENT } from "../../services/actions";
 
