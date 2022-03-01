@@ -8,7 +8,7 @@ const checkResponse: <T = {}>(res: Response) => Promise<T> = (res) => {
 
 export function getIngredients() {
   return fetch(`${API_URL}/ingredients`).then((res) =>
-    checkResponse<{ success: boolean; data: {} }>(res)
+    checkResponse<{ success: boolean; data: [] }>(res)
   );
 }
 

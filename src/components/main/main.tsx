@@ -5,7 +5,6 @@ import { IngredientDetails } from "../ingredient-details/ingredient-details";
 import { Modal } from "../modal/modal";
 import BurgerIngredients from "../burger-ingredients/burger-ingredients";
 import BurgerConstructorDroppable from "../burger-constructor-droppable/burger-constructor-droppable";
-import { useDispatch, useSelector } from "react-redux";
 import {
   DELETE_ORDER_DATA,
   DELETE_SELECTED_INGREDIENT_DATA,
@@ -13,23 +12,15 @@ import {
   getOrderNumber,
   SELECT_INGREDIENT,
 } from "../../services/actions";
-import { TIngredient } from "../../utils/types";
+import { TIngredient, useAppDispatch, useAppSelector } from "../../utils/types";
 
 function Main() {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
-  const { ingredients, selectedIngredient, order } = useSelector(
+  const { selectedIngredient, order } = useAppSelector(
     ({
       ingredients: { ingredients, selectedIngredient },
       order: { order },
-    }: {
-      ingredients: {
-        ingredients: Array<TIngredient>;
-        selectedIngredient: TIngredient;
-      };
-      order: {
-        order: { number: number };
-      };
     }) => {
       return {
         ingredients,
@@ -82,21 +73,19 @@ function Main() {
     <main className={`${mainSectionStyles.main} pb-10`}>
       <BurgerIngredients
         handleIngredientDetailsOpen={handleIngredientDetailsOpen}
-        ingredients={ingredients}
       />
-      <BurgerConstructorDroppable
-        onSubmit={handleOrderDetailsOpen}
-        ingredients={ingredients}
-      />
+      <BurgerConstructorDroppable onSubmit={handleOrderDetailsOpen} />
       <Modal
         isVisible={!!selectedIngredient}
         onClose={handleIngredientDetailsClose}
         title="Детали ингредиента"
       >
-        <IngredientDetails ingredient={selectedIngredient} />
+        {selectedIngredient ? (
+          <IngredientDetails ingredient={selectedIngredient} />
+        ) : null}
       </Modal>
       <Modal isVisible={!!order} onClose={handleOrderDetailsClose}>
-        <OrderDetails order={order} />
+        {order ? <OrderDetails order={order} /> : null}
       </Modal>
     </main>
   );

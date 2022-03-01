@@ -1,10 +1,9 @@
 import orderDetailsStyles from "./order-details.module.css";
 import checkIcon from "../../images/check.svg";
+import { TOrder } from "../../utils/types";
 
 interface OrderDetailsProps {
-  order: {
-    number: number;
-  };
+  order: TOrder;
 }
 
 export function OrderDetails({ order }: OrderDetailsProps) {

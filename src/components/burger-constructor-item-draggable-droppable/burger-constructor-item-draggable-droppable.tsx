@@ -1,9 +1,8 @@
 import { useEffect, useRef } from "react";
 import { useDrag, useDrop } from "react-dnd";
-import { useDispatch } from "react-redux";
 import { REORDER_CONSTRUCTOR_ITEM } from "../../services/actions";
 import BurgerConstructorItem from "../burger-constructor-item/burger-constructor-item";
-import { TIngredient } from "../../utils/types";
+import { TIngredient, useAppDispatch } from "../../utils/types";
 
 interface IBurgerConstructorItemDraggableDroppableProps {
   ingredient: TIngredient;
@@ -17,7 +16,7 @@ function BurgerConstructorItemDraggableDroppable({
   handleDelete,
 }: IBurgerConstructorItemDraggableDroppableProps) {
   const ref = useRef(null);
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const [, dragRef] = useDrag({
     type: "constructor-item",

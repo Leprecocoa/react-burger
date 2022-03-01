@@ -4,24 +4,21 @@ import {
   CurrencyIcon,
 } from "@ya.praktikum/react-developer-burger-ui-components";
 import { useCallback, useMemo, forwardRef } from "react";
-import { useSelector, useDispatch } from "react-redux";
 import burgerConstructorStyles from "./burger-constructor.module.css";
-import { TIngredient } from "../../utils/types";
+import { TIngredient, useAppDispatch, useAppSelector } from "../../utils/types";
 import { DELETE_IGREDIENT } from "../../services/actions";
 import BurgerConstructorItemDraggableDroppable from "../burger-constructor-item-draggable-droppable/burger-constructor-item-draggable-droppable";
 
 const BurgerConstructor = forwardRef<HTMLDivElement, IBurgerConstructorProps>(
   ({ onSubmit, ingredients }, ref) => {
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
 
-    const selectedIngredients = useSelector(
-      (state: {
-        burgerConstructor: { selectedIngredients: Array<TIngredient> };
-      }) => state.burgerConstructor.selectedIngredients
+    const selectedIngredients = useAppSelector(
+      (state) => state.burgerConstructor.selectedIngredients
     );
-    const selectedBun = useSelector(
-      (state: { burgerConstructor: { selectedBun: TIngredient } }) =>
-        state.burgerConstructor.selectedBun
+
+    const selectedBun = useAppSelector(
+      (state) => state.burgerConstructor.selectedBun
     );
 
     const orderSum = useMemo(

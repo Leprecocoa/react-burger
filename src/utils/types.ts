@@ -1,19 +1,7 @@
-import PropTypes from "prop-types";
-
-export const ingredientType = PropTypes.shape({
-  calories: PropTypes.number.isRequired,
-  carbohydrates: PropTypes.number.isRequired,
-  fat: PropTypes.number.isRequired,
-  image: PropTypes.string.isRequired,
-  image_large: PropTypes.string.isRequired,
-  image_mobile: PropTypes.string.isRequired,
-  name: PropTypes.string.isRequired,
-  price: PropTypes.number.isRequired,
-  proteins: PropTypes.number.isRequired,
-  type: PropTypes.string.isRequired,
-  _id: PropTypes.string.isRequired,
-  count: PropTypes.number,
-});
+import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
+import { ThunkAction, ThunkDispatch } from "redux-thunk";
+import { TActions } from "../services/actions";
+import { store } from "./store";
 
 export type TIngredient = {
   calories: number;
@@ -29,3 +17,21 @@ export type TIngredient = {
   _id: string;
   count: number;
 };
+
+export type TOrder = {
+  number: number;
+};
+
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch &
+  ThunkDispatch<RootState, unknown, TActions>;
+
+export const useAppDispatch = () => useDispatch<AppDispatch>();
+export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
+
+export type AppThunk<ReturnType = void> = ThunkAction<
+  ReturnType,
+  RootState,
+  unknown,
+  TActions
+>;

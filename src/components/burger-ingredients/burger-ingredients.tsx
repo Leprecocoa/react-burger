@@ -1,7 +1,6 @@
 import { Tab } from "@ya.praktikum/react-developer-burger-ui-components";
 import { useRef, useState, useMemo, useCallback } from "react";
-import { useSelector } from "react-redux";
-import { TIngredient } from "../../utils/types";
+import { TIngredient, useAppSelector } from "../../utils/types";
 import IngredientsSection from "../ingredients-section/ingredients-section";
 import burgerIngredientsStyles from "./burger-ingredients.module.css";
 
@@ -9,12 +8,10 @@ const HEIGHT_FROM_TOP = 200;
 
 function BurgerIngredients({
   handleIngredientDetailsOpen,
-  ingredients,
 }: {
   handleIngredientDetailsOpen: (ingredient: TIngredient) => void;
-  ingredients: Array<TIngredient>;
 }) {
-  const { selectedIngredients, selectedBun } = useSelector(
+  const { selectedIngredients, selectedBun } = useAppSelector(
     ({
       burgerConstructor: { selectedIngredients, selectedBun },
     }: {
@@ -29,6 +26,12 @@ function BurgerIngredients({
       };
     }
   );
+
+  const { ingredients } = useAppSelector(({ ingredients: { ingredients } }) => {
+    return {
+      ingredients,
+    };
+  });
 
   const counts = useMemo(() => {
     return ingredients.reduce((acc, ingredient) => {
@@ -54,15 +57,15 @@ function BurgerIngredients({
   const sauceRef = useRef<HTMLDivElement | null>(null);
   const mainRef = useRef<HTMLDivElement | null>(null);
 
-  const handleBunTabClick = useCallback(() => setCurrent("bun"), [setCurrent]);
-  const handleSauceTabClick = useCallback(
-    () => setCurrent("sauce"),
-    [setCurrent]
-  );
-  const handleMainTabClick = useCallback(
-    () => setCurrent("main"),
-    [setCurrent]
-  );
+  const handleBunTabClick = useCallback(() => {
+    setCurrent("bun");
+  }, [setCurrent]);
+  const handleSauceTabClick = useCallback(() => {
+    setCurrent("sauce");
+  }, [setCurrent]);
+  const handleMainTabClick = useCallback(() => {
+    setCurrent("main");
+  }, [setCurrent]);
 
   const handleScroll = useCallback(
     (evt) => {

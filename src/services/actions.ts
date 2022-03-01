@@ -1,6 +1,5 @@
-import { Dispatch } from "redux";
 import { getIngredients, sendOrder } from "../utils/api";
-import { TIngredient } from "../utils/types";
+import { AppDispatch, AppThunk, TIngredient, TOrder } from "../utils/types";
 
 export const GET_INGREDIENTS_REQUEST: "GET_INGREDIENTS_REQUEST" =
   "GET_INGREDIENTS_REQUEST";
@@ -31,7 +30,7 @@ export interface IGetIngredientsRequestAction {
 
 export interface IGetIngredientsSuccessAction {
   readonly type: typeof GET_INGREDIENTS_SUCCESS;
-  readonly payload: { ingredients: {} };
+  readonly payload: { ingredients: [] };
 }
 
 export interface IGetIngredientsFailedAction {
@@ -44,7 +43,7 @@ export interface IGetConstructorIngredientsAction {
 
 export interface ISelectIngredientAction {
   readonly type: typeof SELECT_INGREDIENT;
-  payload: { ingredient: {} };
+  payload: { ingredient: TIngredient };
 }
 
 export interface IDeleteSelectedIngredientDataAction {
@@ -58,7 +57,7 @@ export interface IGetOrderNumberRequestAction {
 
 export interface IGetOrderNumberSuccessAction {
   readonly type: typeof GET_ORDER_NUMBER_SUCCESS;
-  readonly payload: { order: {} };
+  readonly payload: { order: TOrder };
 }
 
 export interface IGetOrderNumberFailedAction {
@@ -67,12 +66,12 @@ export interface IGetOrderNumberFailedAction {
 
 export interface IDeleteOrderDataAction {
   readonly type: typeof DELETE_ORDER_DATA;
-  readonly order: {};
+  readonly order: TOrder;
 }
 
 export interface IDropIngredientAction {
   readonly type: typeof DROP_INGREDIENT;
-  readonly payload: { ingredient: { type: string } };
+  readonly payload: { ingredient: TIngredient };
 }
 
 export interface IDeleteIngredientAction {
@@ -100,8 +99,8 @@ export type TActions =
   | IDeleteIngredientAction
   | IReorderConstructorItemAction;
 
-export function getIngredientsApi() {
-  return (dispatch: Dispatch) => {
+export const getIngredientsApi: () => AppThunk = () => {
+  return (dispatch) => {
     dispatch({
       type: GET_INGREDIENTS_REQUEST,
     });
@@ -122,10 +121,12 @@ export function getIngredientsApi() {
       })
       .catch((err) => console.log(err));
   };
-}
+};
 
-export function getOrderNumber(ingredientIds: number[]) {
-  return (dispatch: Dispatch) => {
+export const getOrderNumber: (ingredientIds: number[]) => AppThunk = (
+  ingredientIds
+) => {
+  return (dispatch: AppDispatch) => {
     dispatch({
       type: GET_ORDER_NUMBER_REQUEST,
     });
@@ -142,6 +143,6 @@ export function getOrderNumber(ingredientIds: number[]) {
           type: GET_ORDER_NUMBER_FAILED,
         });
       }
-    });
+    })
   };
-}
+};
