@@ -1,5 +1,11 @@
 import { getIngredients, sendOrder } from "../utils/api";
-import { AppDispatch, AppThunk, TIngredient, TOrder } from "../utils/types";
+import {
+  AppDispatch,
+  AppThunk,
+  TIngredient,
+  TOrder,
+  TSelectedIngredient,
+} from "../utils/types";
 
 export const GET_INGREDIENTS_REQUEST: "GET_INGREDIENTS_REQUEST" =
   "GET_INGREDIENTS_REQUEST";
@@ -71,7 +77,7 @@ export interface IDeleteOrderDataAction {
 
 export interface IDropIngredientAction {
   readonly type: typeof DROP_INGREDIENT;
-  readonly payload: { ingredient: TIngredient };
+  readonly payload: { ingredient: TSelectedIngredient };
 }
 
 export interface IDeleteIngredientAction {
@@ -143,6 +149,6 @@ export const getOrderNumber: (ingredientIds: number[]) => AppThunk = (
           type: GET_ORDER_NUMBER_FAILED,
         });
       }
-    })
+    });
   };
 };

@@ -18,6 +18,8 @@ export type TIngredient = {
   count: number;
 };
 
+export type TSelectedIngredient = TIngredient & { uid: string };
+
 export type TOrder = {
   number: number;
 };

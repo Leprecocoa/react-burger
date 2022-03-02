@@ -1,5 +1,5 @@
 import { Reducer } from "redux";
-import { TIngredient, TOrder } from "../utils/types";
+import { TIngredient, TOrder, TSelectedIngredient } from "../utils/types";
 import {
   DELETE_ORDER_DATA,
   DELETE_SELECTED_INGREDIENT_DATA,
@@ -79,8 +79,8 @@ export const ingredientsReducer: Reducer<TIngredientsState, TActions> = (
 // burger constructor reducer
 
 type TBurgerConstructorState = {
-  selectedIngredients: TIngredient[];
-  selectedBun: TIngredient | null;
+  selectedIngredients: TSelectedIngredient[];
+  selectedBun: TSelectedIngredient | null;
 };
 
 const burgerConstructorInitialState: TBurgerConstructorState = {

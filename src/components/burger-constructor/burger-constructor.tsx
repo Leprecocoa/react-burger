@@ -74,7 +74,7 @@ const BurgerConstructor = forwardRef<HTMLDivElement, IBurgerConstructorProps>(
                   ingredient={ingredient}
                   index={index}
                   handleDelete={handleDelete}
-                  key={`${ingredient._id}${index}`}
+                  key={ingredient.uid}
                 />
               );
             })}
