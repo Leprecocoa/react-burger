@@ -1,27 +1,37 @@
 import { Tab } from "@ya.praktikum/react-developer-burger-ui-components";
 import { useRef, useState, useMemo, useCallback } from "react";
-import { useSelector } from "react-redux";
+import { TIngredient, useAppSelector } from "../../utils/types";
 import IngredientsSection from "../ingredients-section/ingredients-section";
 import burgerIngredientsStyles from "./burger-ingredients.module.css";
-import PropTypes from "prop-types";
-import { ingredientType } from "../../utils/types";
 
 const HEIGHT_FROM_TOP = 200;
 
-BurgerIngredients.propTypes = {
-  handleIngredientDetailsOpen: PropTypes.func.isRequired,
-  ingredients: PropTypes.arrayOf(ingredientType),
-};
-
-function BurgerIngredients({ handleIngredientDetailsOpen, ingredients }) {
-  const { selectedIngredients, selectedBun } = useSelector(
-    ({ burgerConstructor: { selectedIngredients, selectedBun } }) => {
+function BurgerIngredients({
+  handleIngredientDetailsOpen,
+}: {
+  handleIngredientDetailsOpen: (ingredient: TIngredient) => void;
+}) {
+  const { selectedIngredients, selectedBun } = useAppSelector(
+    ({
+      burgerConstructor: { selectedIngredients, selectedBun },
+    }: {
+      burgerConstructor: {
+        selectedIngredients: Array<TIngredient>;
+        selectedBun: TIngredient | null;
+      };
+    }) => {
       return {
         selectedIngredients,
         selectedBun,
       };
     }
   );
+
+  const { ingredients } = useAppSelector(({ ingredients: { ingredients } }) => {
+    return {
+      ingredients,
+    };
+  });
 
   const counts = useMemo(() => {
     return ingredients.reduce((acc, ingredient) => {
@@ -43,22 +53,25 @@ function BurgerIngredients({ handleIngredientDetailsOpen, ingredients }) {
 
   const [current, setCurrent] = useState("bun");
 
-  const bunRef = useRef();
-  const sauceRef = useRef();
-  const mainRef = useRef();
+  const bunRef = useRef<HTMLDivElement | null>(null);
+  const sauceRef = useRef<HTMLDivElement | null>(null);
+  const mainRef = useRef<HTMLDivElement | null>(null);
 
-  const handleBunTabClick = useCallback(() => setCurrent("bun"), [setCurrent]);
-  const handleSauceTabClick = useCallback(
-    () => setCurrent("sauce"),
-    [setCurrent]
-  );
-  const handleMainTabClick = useCallback(
-    () => setCurrent("main"),
-    [setCurrent]
-  );
+  const handleBunTabClick = useCallback(() => {
+    setCurrent("bun");
+  }, [setCurrent]);
+  const handleSauceTabClick = useCallback(() => {
+    setCurrent("sauce");
+  }, [setCurrent]);
+  const handleMainTabClick = useCallback(() => {
+    setCurrent("main");
+  }, [setCurrent]);
 
   const handleScroll = useCallback(
     (evt) => {
+      if (sauceRef.current == null || mainRef.current == null) {
+        return;
+      }
       const container = evt.target;
       const scrollPosition = container.scrollTop;
       const saucePosition = sauceRef.current.offsetTop;

@@ -1,11 +1,7 @@
+import { TIngredient } from "../../utils/types";
 import ingredientDetailsStyles from "./ingredient-details.module.css";
-import { ingredientType } from "../../utils/types";
 
-IngredientDetails.propTypes = {
-  ingredient: ingredientType,
-};
-
-export function IngredientDetails({ ingredient }) {
+export function IngredientDetails({ ingredient }: { ingredient: TIngredient }) {
   const {
     image_large: image,
     name,

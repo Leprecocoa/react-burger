@@ -1,3 +1,5 @@
+import { Reducer } from "redux";
+import { TIngredient, TOrder, TSelectedIngredient } from "../utils/types";
 import {
   DELETE_ORDER_DATA,
   DELETE_SELECTED_INGREDIENT_DATA,
@@ -11,18 +13,29 @@ import {
   DROP_INGREDIENT,
   DELETE_IGREDIENT,
   REORDER_CONSTRUCTOR_ITEM,
+  TActions,
 } from "./actions";
 
 // ingredients reducer
 
-const ingredientsInitialState = {
+type TIngredientsState = {
+  ingredients: TIngredient[];
+  ingredientsRequest: boolean;
+  ingredientsFailed: boolean;
+  selectedIngredient: TIngredient | null;
+};
+
+const ingredientsInitialState: TIngredientsState = {
   ingredients: [],
   ingredientsRequest: false,
   ingredientsFailed: false,
   selectedIngredient: null,
 };
 
-export const ingredientsReducer = (state = ingredientsInitialState, action) => {
+export const ingredientsReducer: Reducer<TIngredientsState, TActions> = (
+  state = ingredientsInitialState,
+  action
+) => {
   switch (action.type) {
     case GET_INGREDIENTS_REQUEST: {
       return {
@@ -65,16 +78,28 @@ export const ingredientsReducer = (state = ingredientsInitialState, action) => {
 
 // burger constructor reducer
 
-const burgerConstructorInitialState = {
+type TBurgerConstructorState = {
+  selectedIngredients: TSelectedIngredient[];
+  selectedBun: TSelectedIngredient | null;
+};
+
+const burgerConstructorInitialState: TBurgerConstructorState = {
   selectedIngredients: [],
   selectedBun: null,
 };
 
-export const burgerConstructorReducer = (
-  state = burgerConstructorInitialState,
-  action
-) => {
+export const burgerConstructorReducer: Reducer<
+  TBurgerConstructorState,
+  TActions
+> = (state = burgerConstructorInitialState, action) => {
   switch (action.type) {
+    case GET_ORDER_NUMBER_SUCCESS: {
+      return {
+        ...state,
+        selectedIngredients: [],
+        selectedBun: null,
+      };
+    }
     case DROP_INGREDIENT: {
       const { ingredient } = action.payload;
       if (ingredient.type === "bun") {
@@ -115,13 +140,22 @@ export const burgerConstructorReducer = (
 
 // order reducer
 
-const orderInitialState = {
+type TOrderState = {
+  order: TOrder | null;
+  orderNumberRequest: boolean;
+  orderNumberFailed: boolean;
+};
+
+const orderInitialState: TOrderState = {
   order: null,
   orderNumberRequest: false,
   orderNumberFailed: false,
 };
 
-export const orderReducer = (state = orderInitialState, action) => {
+export const orderReducer: Reducer<TOrderState> = (
+  state = orderInitialState,
+  action
+) => {
   switch (action.type) {
     case GET_ORDER_NUMBER_REQUEST: {
       return {

@@ -1,15 +1,18 @@
-import PropTypes from "prop-types";
 import { useDrag } from "react-dnd";
 import IngredientCard from "../ingredient-card/ingredient-card";
-import { ingredientType } from "../../utils/types";
+import { TIngredient } from "../../utils/types";
 
-IngredientCardDraggable.propTypes = {
-  ingredient: ingredientType.isRequired,
-  onIngredientClick: PropTypes.func.isRequired,
-  count: PropTypes.number.isRequired,
-};
+interface IIngredientCardDraggableProps {
+  ingredient: TIngredient;
+  onIngredientClick: (ingredient: TIngredient) => void;
+  count: number;
+}
 
-function IngredientCardDraggable({ ingredient, onIngredientClick, count }) {
+function IngredientCardDraggable({
+  ingredient,
+  onIngredientClick,
+  count,
+}: IIngredientCardDraggableProps) {
   const [, dragRef] = useDrag({
     type: "ingredient",
     item: { ingredient },

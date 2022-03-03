@@ -3,11 +3,10 @@ import {
   CurrencyIcon,
 } from "@ya.praktikum/react-developer-burger-ui-components";
 import { useCallback, forwardRef } from "react";
-import PropTypes from "prop-types";
 import ingredientCard from "./ingredient-card.module.css";
-import { ingredientType } from "../../utils/types";
+import { TIngredient } from "../../utils/types";
 
-const IngredientCard = forwardRef(
+const IngredientCard = forwardRef<HTMLDivElement, IIngredientCardProps>(
   ({ ingredient, onIngredientClick, count }, ref) => {
     const handleSectionClick = useCallback(() => {
       onIngredientClick(ingredient);
@@ -32,10 +31,10 @@ const IngredientCard = forwardRef(
   }
 );
 
-IngredientCard.propTypes = {
-  ingredient: ingredientType.isRequired,
-  onIngredientClick: PropTypes.func.isRequired,
-  count: PropTypes.number.isRequired,
-};
+interface IIngredientCardProps {
+  ingredient: TIngredient;
+  onIngredientClick: (ingredient: TIngredient) => void;
+  count: number;
+}
 
 export default IngredientCard;

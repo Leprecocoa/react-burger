@@ -4,16 +4,11 @@ import "./index.css";
 import App from "./components/app/app";
 import reportWebVitals from "./reportWebVitals";
 import "@ya.praktikum/react-developer-burger-ui-components";
-import { composeEnhancers } from "./redux-devtools";
-import thunk from "redux-thunk";
-import { applyMiddleware, createStore } from "redux";
-import { rootReducer } from "./services/root-reducer";
 import { Provider } from "react-redux";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
+import { store } from "./utils/store";
 
-const enhancer = composeEnhancers(applyMiddleware(thunk));
-const store = createStore(rootReducer, enhancer);
 
 ReactDOM.render(
   <React.StrictMode>

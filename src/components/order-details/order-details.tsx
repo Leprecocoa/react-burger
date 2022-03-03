@@ -1,12 +1,12 @@
 import orderDetailsStyles from "./order-details.module.css";
 import checkIcon from "../../images/check.svg";
-import PropTypes from "prop-types";
+import { TOrder } from "../../utils/types";
 
-OrderDetails.propTypes = {
-  order: PropTypes.shape({ number: PropTypes.number.isRequired }),
-};
+interface OrderDetailsProps {
+  order: TOrder;
+}
 
-export function OrderDetails({ order }) {
+export function OrderDetails({ order }: OrderDetailsProps) {
   if (!order) {
     return null;
   }

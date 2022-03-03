@@ -1,23 +1,26 @@
-import { useEffect } from "react";
+import { FunctionComponent, useEffect } from "react";
 import modalStyles from "./modal.module.css";
 import { createPortal } from "react-dom";
 import { ModalOverlay } from "../modal-overlay/modal-overlay";
 import { CloseIcon } from "@ya.praktikum/react-developer-burger-ui-components";
-import PropTypes from "prop-types";
 
-Modal.propTypes = {
-  children: PropTypes.node.isRequired,
-  title: PropTypes.string,
-  onClose: PropTypes.func.isRequired,
-  isVisible: PropTypes.bool.isRequired,
-};
+interface IModalProps {
+  title?: string;
+  onClose: () => void;
+  isVisible: boolean;
+}
 
-export function Modal({ children, title, onClose, isVisible }) {
+export const Modal: FunctionComponent<IModalProps> = ({
+  children,
+  title,
+  onClose,
+  isVisible,
+}) => {
   useEffect(() => {
     if (!isVisible) {
       return;
     }
-    const listener = (event) => {
+    const listener = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         onClose();
       }
@@ -45,6 +48,6 @@ export function Modal({ children, title, onClose, isVisible }) {
         {children}
       </div>
     </>,
-    document.querySelector("#modals")
+    document.querySelector("#modals") as HTMLElement
   );
-}
+};
