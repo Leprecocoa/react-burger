@@ -1,4 +1,4 @@
-import { getIngredients, sendOrder } from "../utils/api";
+import { getIngredients, register, sendOrder } from "../utils/api";
 import {
   AppDispatch,
   AppThunk,
@@ -29,6 +29,8 @@ export const DROP_INGREDIENT: "DROP_INGREDIENT" = "DROP_INGREDIENT";
 export const DELETE_IGREDIENT: "DELETE_IGREDIENT" = "DELETE_IGREDIENT";
 export const REORDER_CONSTRUCTOR_ITEM: "REORDER_CONSTRUCTOR_ITEM" =
   "REORDER_CONSTRUCTOR_ITEM";
+export const SET_USER_DATA: "SET_USER_DATA" = "SET_USER_DATA";
+export const USER_REGISTER: "USER_REGISTER" = "USER_REGISTER";
 
 export interface IGetIngredientsRequestAction {
   readonly type: typeof GET_INGREDIENTS_REQUEST;
@@ -90,6 +92,14 @@ export interface IReorderConstructorItemAction {
   readonly payload: { dragIndex: number; itemIndex: number };
 }
 
+export interface ISetUserData {
+  readonly type: typeof SET_USER_DATA;
+}
+
+export interface IUserRegister {
+  readonly type: typeof USER_REGISTER;
+}
+
 export type TActions =
   | IGetIngredientsRequestAction
   | IGetIngredientsSuccessAction
@@ -103,7 +113,9 @@ export type TActions =
   | IDeleteOrderDataAction
   | IDropIngredientAction
   | IDeleteIngredientAction
-  | IReorderConstructorItemAction;
+  | IReorderConstructorItemAction
+  | ISetUserData
+  | IUserRegister;
 
 export const getIngredientsApi: () => AppThunk = () => {
   return (dispatch) => {
@@ -149,6 +161,18 @@ export const getOrderNumber: (ingredientIds: number[]) => AppThunk = (
           type: GET_ORDER_NUMBER_FAILED,
         });
       }
+    });
+  };
+};
+
+export const registerUser: any = ({ email, password, name }: any) => {
+  return (dispatch: any) => {
+    dispatch({
+      type: USER_REGISTER,
+    });
+    register({ email, password, name }).then((res) => {
+      console.log(res.accessToken, res);
+      localStorage.setItem("token", res.accessToken);
     });
   };
 };

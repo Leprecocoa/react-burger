@@ -1,0 +1,19 @@
+.main {
+  display: flex;
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+}
+.active_link {
+  color: #fff;
+}
+
+.navlink {
+  text-decoration: none;
+}
+
+.nav_text {
+  max-width: 320px;
+}

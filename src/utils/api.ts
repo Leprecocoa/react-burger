@@ -23,3 +23,21 @@ export function sendOrder(ingredientIds: number[]) {
     }),
   }).then((res) => checkResponse<{ order: {}; success: boolean }>(res));
 }
+
+export function register({
+  email,
+  password,
+  name,
+}: {
+  email: string;
+  password: string;
+  name: string;
+}) {
+  return fetch(`${API_URL}/auth/register`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password, name }),
+  }).then((res) => checkResponse<{ accessToken: string }>(res));
+}
+
+export function auth() {}

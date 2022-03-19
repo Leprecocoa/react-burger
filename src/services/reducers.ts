@@ -14,6 +14,7 @@ import {
   DELETE_IGREDIENT,
   REORDER_CONSTRUCTOR_ITEM,
   TActions,
+  SET_USER_DATA,
 } from "./actions";
 
 // ingredients reducer
@@ -181,6 +182,36 @@ export const orderReducer: Reducer<TOrderState> = (
       return {
         ...state,
         order: null,
+      };
+    }
+    default:
+      return state;
+  }
+};
+
+type TUserState = {
+  email: string;
+  password: string;
+  name: string;
+};
+
+const userInitialState: TUserState = {
+  email: "",
+  password: "",
+  name: "",
+};
+
+export const userReducer: Reducer<TUserState> = (
+  state = userInitialState,
+  action
+) => {
+  switch (action.type) {
+    case SET_USER_DATA: {
+      return {
+        ...state,
+        email: action.payload.email ?? state.email,
+        password: action.payload.password ?? state.password,
+        name: action.payload.name ?? state.name,
       };
     }
     default:
