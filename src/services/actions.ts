@@ -1,4 +1,4 @@
-import { getIngredients, register, sendOrder } from "../utils/api";
+import { getIngredients, login, register, sendOrder } from "../utils/api";
 import {
   AppDispatch,
   AppThunk,
@@ -29,8 +29,9 @@ export const DROP_INGREDIENT: "DROP_INGREDIENT" = "DROP_INGREDIENT";
 export const DELETE_IGREDIENT: "DELETE_IGREDIENT" = "DELETE_IGREDIENT";
 export const REORDER_CONSTRUCTOR_ITEM: "REORDER_CONSTRUCTOR_ITEM" =
   "REORDER_CONSTRUCTOR_ITEM";
-export const SET_USER_DATA: "SET_USER_DATA" = "SET_USER_DATA";
 export const USER_REGISTER: "USER_REGISTER" = "USER_REGISTER";
+export const USER_LOGIN: "USER_LOGIN" = "USER_LOGIN";
+export const REFRESH_TOKEN: "REFRESH_TOKEN" = "REFRESH_TOKEN";
 
 export interface IGetIngredientsRequestAction {
   readonly type: typeof GET_INGREDIENTS_REQUEST;
@@ -92,12 +93,16 @@ export interface IReorderConstructorItemAction {
   readonly payload: { dragIndex: number; itemIndex: number };
 }
 
-export interface ISetUserData {
-  readonly type: typeof SET_USER_DATA;
-}
-
 export interface IUserRegister {
   readonly type: typeof USER_REGISTER;
+}
+
+export interface IUserLogin {
+  readonly type: typeof USER_LOGIN;
+}
+
+export interface IRefreshToken {
+  readonly type: typeof REFRESH_TOKEN;
 }
 
 export type TActions =
@@ -114,8 +119,9 @@ export type TActions =
   | IDropIngredientAction
   | IDeleteIngredientAction
   | IReorderConstructorItemAction
-  | ISetUserData
-  | IUserRegister;
+  | IUserRegister
+  | IUserLogin
+  | IRefreshToken;
 
 export const getIngredientsApi: () => AppThunk = () => {
   return (dispatch) => {
@@ -165,14 +171,24 @@ export const getOrderNumber: (ingredientIds: number[]) => AppThunk = (
   };
 };
 
-export const registerUser: any = ({ email, password, name }: any) => {
-  return (dispatch: any) => {
-    dispatch({
-      type: USER_REGISTER,
-    });
+export const registerUser: any = (
+  { email, password, name }: any,
+  history: any
+) => {
+  return () => {
     register({ email, password, name }).then((res) => {
-      console.log(res.accessToken, res);
-      localStorage.setItem("token", res.accessToken);
+      console.log(res);
+      history.push("/login");
+    });
+  };
+};
+
+export const loginUser: any = ({ email, password }: any, history: any) => {
+  return () => {
+    console.log(email, password);
+    login({ email, password }).then((res) => {
+      console.log(res);
+      history.push("/");
     });
   };
 };

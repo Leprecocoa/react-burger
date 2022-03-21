@@ -40,4 +40,24 @@ export function register({
   }).then((res) => checkResponse<{ accessToken: string }>(res));
 }
 
-export function auth() {}
+export function login({
+  email,
+  password,
+}: {
+  email: string;
+  password: string;
+}) {
+  return fetch(`${API_URL}/auth/login`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password }),
+  }).then((res) => checkResponse(res));
+}
+
+export function refreshToken(token: string) {
+  return fetch(`${API_URL}/auth/token`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ token: "{{refreshToken}}" }),
+  }).then((res) => checkResponse(res));
+}

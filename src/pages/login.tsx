@@ -3,14 +3,40 @@ import {
   Input,
   PasswordInput,
 } from "@ya.praktikum/react-developer-burger-ui-components";
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useCallback } from "react";
+import { Link, useHistory } from "react-router-dom";
 import Header from "../components/header/header";
+import { loginUser, USER_LOGIN } from "../services/actions";
+import { useAppDispatch, useAppSelector } from "../utils/types";
 import styles from "./pages.module.css";
 
 export const Login = () => {
-  const [emailValue, setEmailValue] = useState("");
-  const [passwordValue, setPasswordValue] = useState("");
+  const dispatch = useAppDispatch();
+  const history = useHistory();
+
+  const { email, password } = useAppSelector((state) => {
+    return {
+      email: state.loginUser.email,
+      password: state.loginUser.password,
+    };
+  });
+
+  const handleChange = useCallback(
+    (evt) => {
+      const { name, value } = evt.target;
+      dispatch({ type: USER_LOGIN, payload: { [name]: value } });
+    },
+    [dispatch]
+  );
+
+  const handleSubmit = useCallback(
+    (evt) => {
+      evt.preventDefault();
+      console.log("login submit data", email, password);
+      dispatch(loginUser({ email, password }, history));
+    },
+    [dispatch, email, password, history]
+  );
 
   return (
     <>
@@ -18,13 +44,13 @@ export const Login = () => {
       <div className={styles.main}>
         <div className={`${styles.form__block} pt-20`}>
           <h1 className="text text_type_main-medium mb-6">Вход</h1>
-          <form className={styles.form}>
+          <form className={styles.form} onSubmit={handleSubmit}>
             <div className="mb-6">
               <Input
                 type={"email"}
                 placeholder={"E-mail"}
-                onChange={(e) => setEmailValue(e.target.value)}
-                value={emailValue}
+                onChange={(e) => handleChange(e)}
+                value={email}
                 name={"email"}
                 error={false}
                 errorText={"Ошибка"}
@@ -33,8 +59,8 @@ export const Login = () => {
             </div>
             <div className="mb-6">
               <PasswordInput
-                onChange={(e) => setPasswordValue(e.target.value)}
-                value={passwordValue}
+                onChange={(e) => handleChange(e)}
+                value={password}
                 name={"password"}
               />
             </div>

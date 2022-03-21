@@ -14,7 +14,8 @@ import {
   DELETE_IGREDIENT,
   REORDER_CONSTRUCTOR_ITEM,
   TActions,
-  SET_USER_DATA,
+  USER_LOGIN,
+  USER_REGISTER,
 } from "./actions";
 
 // ingredients reducer
@@ -189,29 +190,58 @@ export const orderReducer: Reducer<TOrderState> = (
   }
 };
 
-type TUserState = {
+type TRegisterUserState = {
   email: string;
   password: string;
   name: string;
 };
 
-const userInitialState: TUserState = {
+const registerUserInitialState: TRegisterUserState = {
   email: "",
   password: "",
   name: "",
 };
 
-export const userReducer: Reducer<TUserState> = (
-  state = userInitialState,
+export const registerUserReducer: Reducer<TRegisterUserState> = (
+  state = registerUserInitialState,
   action
 ) => {
   switch (action.type) {
-    case SET_USER_DATA: {
+    case USER_REGISTER: {
       return {
         ...state,
         email: action.payload.email ?? state.email,
         password: action.payload.password ?? state.password,
         name: action.payload.name ?? state.name,
+      };
+    }
+    default:
+      return state;
+  }
+};
+
+type TLoginUserState = {
+  email: string;
+  password: string;
+};
+
+const loginUserInitialState = {
+  email: "",
+  password: "",
+};
+
+export const loginUserReducer: Reducer<TLoginUserState> = (
+  state = loginUserInitialState,
+  action
+) => {
+  switch (action.type) {
+    case USER_LOGIN: {
+      console.log("state", state);
+      console.log("payload", action.payload);
+      return {
+        ...state,
+        email: action.payload.email ?? state.email,
+        password: action.payload.password ?? state.password,
       };
     }
     default:

@@ -4,27 +4,28 @@ import {
   PasswordInput,
 } from "@ya.praktikum/react-developer-burger-ui-components";
 import { useCallback } from "react";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import Header from "../components/header/header";
-import { registerUser, SET_USER_DATA } from "../services/actions";
+import { registerUser, USER_REGISTER } from "../services/actions";
 import { useAppDispatch, useAppSelector } from "../utils/types";
 import styles from "./pages.module.css";
 
 export const Register = () => {
   const dispatch = useAppDispatch();
+  const history = useHistory();
 
   const { email, password, name } = useAppSelector((state) => {
     return {
-      email: state.user.email,
-      password: state.user.password,
-      name: state.user.name,
+      email: state.registerUser.email,
+      password: state.registerUser.password,
+      name: state.registerUser.name,
     };
   });
 
   const handleChange = useCallback(
     (evt) => {
       const { name, value } = evt.target;
-      dispatch({ type: SET_USER_DATA, payload: { [name]: value } });
+      dispatch({ type: USER_REGISTER, payload: { [name]: value } });
     },
     [dispatch]
   );
@@ -33,9 +34,9 @@ export const Register = () => {
     (evt) => {
       evt.preventDefault();
       console.log(email, password, name);
-      dispatch(registerUser({ email, password, name }));
+      dispatch(registerUser({ email, password, name }, history));
     },
-    [dispatch, email, name, password]
+    [dispatch, email, name, password, history]
   );
 
   return (
