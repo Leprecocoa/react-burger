@@ -4,7 +4,7 @@ import {
   PasswordInput,
 } from "@ya.praktikum/react-developer-burger-ui-components";
 import { useCallback } from "react";
-import { Link, useHistory } from "react-router-dom";
+import { Link, Redirect, useHistory } from "react-router-dom";
 import Header from "../components/header/header";
 import { loginUser, USER_LOGIN } from "../services/actions";
 import { useAppDispatch, useAppSelector } from "../utils/types";
@@ -14,10 +14,11 @@ export const Login = () => {
   const dispatch = useAppDispatch();
   const history = useHistory();
 
-  const { email, password } = useAppSelector((state) => {
+  const { email, password, loggedIn } = useAppSelector((state) => {
     return {
-      email: state.loginUser.email,
-      password: state.loginUser.password,
+      email: state.user.email,
+      password: state.user.password,
+      loggedIn: state.user.loggedIn,
     };
   });
 
@@ -32,7 +33,6 @@ export const Login = () => {
   const handleSubmit = useCallback(
     (evt) => {
       evt.preventDefault();
-      console.log("login submit data", email, password);
       dispatch(loginUser({ email, password }, history));
     },
     [dispatch, email, password, history]

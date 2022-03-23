@@ -58,6 +58,14 @@ export function refreshToken(token: string) {
   return fetch(`${API_URL}/auth/token`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ token: "{{refreshToken}}" }),
+    body: JSON.stringify({ token: refreshToken }),
+  }).then((res) => checkResponse(res));
+}
+
+export function logout(refreshToken: string) {
+  return fetch(`${API_URL}/auth/logout`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ token: refreshToken }),
   }).then((res) => checkResponse(res));
 }

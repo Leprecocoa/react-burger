@@ -4,7 +4,7 @@ import {
   PasswordInput,
 } from "@ya.praktikum/react-developer-burger-ui-components";
 import { useCallback } from "react";
-import { Link, useHistory } from "react-router-dom";
+import { Link, Redirect, useHistory } from "react-router-dom";
 import Header from "../components/header/header";
 import { registerUser, USER_REGISTER } from "../services/actions";
 import { useAppDispatch, useAppSelector } from "../utils/types";
@@ -14,11 +14,12 @@ export const Register = () => {
   const dispatch = useAppDispatch();
   const history = useHistory();
 
-  const { email, password, name } = useAppSelector((state) => {
+  const { email, password, name, loggedIn } = useAppSelector((state) => {
     return {
-      email: state.registerUser.email,
-      password: state.registerUser.password,
-      name: state.registerUser.name,
+      email: state.user.email,
+      password: state.user.password,
+      name: state.user.name,
+      loggedIn: state.user.loggedIn,
     };
   });
 
@@ -33,7 +34,6 @@ export const Register = () => {
   const handleSubmit = useCallback(
     (evt) => {
       evt.preventDefault();
-      console.log(email, password, name);
       dispatch(registerUser({ email, password, name }, history));
     },
     [dispatch, email, name, password, history]

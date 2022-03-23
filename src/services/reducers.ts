@@ -16,6 +16,7 @@ import {
   TActions,
   USER_LOGIN,
   USER_REGISTER,
+  USER_LOGOUT,
 } from "./actions";
 
 // ingredients reducer
@@ -190,20 +191,22 @@ export const orderReducer: Reducer<TOrderState> = (
   }
 };
 
-type TRegisterUserState = {
+type TUserState = {
   email: string;
   password: string;
   name: string;
+  loggedIn: boolean;
 };
 
-const registerUserInitialState: TRegisterUserState = {
+const userInitialState: TUserState = {
   email: "",
   password: "",
   name: "",
+  loggedIn: !!localStorage.getItem("refreshToken"),
 };
 
-export const registerUserReducer: Reducer<TRegisterUserState> = (
-  state = registerUserInitialState,
+export const userReducer: Reducer<TUserState> = (
+  state = userInitialState,
   action
 ) => {
   switch (action.type) {
@@ -215,33 +218,20 @@ export const registerUserReducer: Reducer<TRegisterUserState> = (
         name: action.payload.name ?? state.name,
       };
     }
-    default:
-      return state;
-  }
-};
-
-type TLoginUserState = {
-  email: string;
-  password: string;
-};
-
-const loginUserInitialState = {
-  email: "",
-  password: "",
-};
-
-export const loginUserReducer: Reducer<TLoginUserState> = (
-  state = loginUserInitialState,
-  action
-) => {
-  switch (action.type) {
     case USER_LOGIN: {
-      console.log("state", state);
-      console.log("payload", action.payload);
       return {
         ...state,
         email: action.payload.email ?? state.email,
         password: action.payload.password ?? state.password,
+        loggedIn: true,
+      };
+    }
+    case USER_LOGOUT: {
+      return {
+        ...state,
+        email: "",
+        password: "",
+        loggedIn: false,
       };
     }
     default:

@@ -4,6 +4,7 @@ import {
   Logo,
   ProfileIcon,
 } from "@ya.praktikum/react-developer-burger-ui-components";
+import { Link } from "react-router-dom";
 import header from "./header.module.css";
 
 function Header() {
@@ -27,14 +28,14 @@ function Header() {
       </nav>
       <Logo />
       <div className={header.auth}>
-        <button className={`${header.navLink} pl-5 pr-5 pt-4 pb-4`}>
+        <Link to="/profile" className={`${header.navLink} pl-5 pr-5 pt-4 pb-4`}>
           <ProfileIcon type="secondary" />
           <span
             className={`text text_type_main-default ml-2 ${header.navLinkInactive}`}
           >
             Личный кабинет
           </span>
-        </button>
+        </Link>
       </div>
     </header>
   );

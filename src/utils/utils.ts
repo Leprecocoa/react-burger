@@ -10,11 +10,11 @@ export function getCookie(name: any) {
 }
 
 type TProps = {
-  [key: string]: string | Date | boolean | number;
-  expires: string | number | Date;
+  [key: string]: string | Date | boolean | number | undefined;
+  expires?: string | number | Date;
 };
 
-export function setCookie(name: any, value: any, props: TProps) {
+export function setCookie(name: any, value: any, props?: TProps) {
   props = props || {};
   let exp = props.expires;
   if (typeof exp == "number" && exp) {

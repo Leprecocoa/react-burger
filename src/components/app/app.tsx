@@ -6,15 +6,25 @@ import { Login } from "../../pages/login";
 import { ForgotPassword } from "../../pages/forgot-password";
 import { ResetPassword } from "../../pages/reset-password";
 import { Profile } from "../../pages/profile";
+import { useAppSelector } from "../../utils/types";
+import ProtectedRoute from "../protected-route/protected-route";
 
 function App() {
+  const { loggedIn } = useAppSelector((state) => {
+    return {
+      loggedIn: state.user.loggedIn,
+    };
+  });
   return (
     <BrowserRouter>
       <div className={appstyles.page}>
         <Switch>
-          <Route path="/" exact>
-            <Constructor />
-          </Route>
+          <ProtectedRoute
+            exact
+            path="/"
+            loggedIn={loggedIn}
+            component={Constructor}
+          />
           <Route path="/register">
             <Register />
           </Route>
@@ -27,9 +37,11 @@ function App() {
           <Route path="/reset-password">
             <ResetPassword />
           </Route>
-          <Route path="/profile">
-            <Profile />
-          </Route>
+          <ProtectedRoute
+            path="/profile"
+            loggedIn={loggedIn}
+            component={Profile}
+          />
         </Switch>
       </div>
     </BrowserRouter>

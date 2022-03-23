@@ -1,13 +1,21 @@
 import { Input } from "@ya.praktikum/react-developer-burger-ui-components";
-import { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useHistory } from "react-router-dom";
 import Header from "../components/header/header";
+import { logoutUser } from "../services/actions";
+import { useAppDispatch, useAppSelector } from "../utils/types";
 import styles from "./profile.module.css";
 
 export const Profile = () => {
-  const [nameValue, setNameValue] = useState("");
-  const [loginValue, setLoginValue] = useState("");
-  const [passwordValue, setPasswordValue] = useState("");
+  const { name, email, password } = useAppSelector((state) => {
+    return {
+      name: state.user.name,
+      email: state.user.email,
+      password: state.user.password,
+    };
+  });
+
+  const dispatch = useAppDispatch();
+  const history = useHistory();
 
   return (
     <>
@@ -27,12 +35,16 @@ export const Profile = () => {
           >
             История заказов
           </NavLink>
-          <NavLink
-            to="/"
-            className={`${styles.navlink} text text_type_main-medium text_color_inactive mb-6`}
+          <button
+            className={`${styles.logout} text text_type_main-medium text_color_inactive mb-6`}
+            onClick={() =>
+              dispatch(
+                logoutUser(localStorage.getItem("refreshToken"), history)
+              )
+            }
           >
             Выход
-          </NavLink>
+          </button>
           <p
             className={`${styles.nav_text} text text_type_main-default text_color_inactive`}
           >
@@ -44,9 +56,9 @@ export const Profile = () => {
             <Input
               type={"text"}
               placeholder={"Имя"}
-              onChange={(e) => setNameValue(e.target.value)}
+              onChange={(e) => {}}
               icon={"EditIcon"}
-              value={nameValue}
+              value={name}
               name={"name"}
               error={false}
               errorText={"Ошибка"}
@@ -57,9 +69,9 @@ export const Profile = () => {
             <Input
               type={"text"}
               placeholder={"Логин"}
-              onChange={(e) => setPasswordValue(e.target.value)}
+              onChange={(e) => {}}
               icon={"EditIcon"}
-              value={loginValue}
+              value={email}
               name={"login"}
               error={false}
               errorText={"Ошибка"}
@@ -70,9 +82,9 @@ export const Profile = () => {
             <Input
               type={"password"}
               placeholder={"Пароль"}
-              onChange={(e) => setLoginValue(e.target.value)}
+              onChange={(e) => {}}
               icon={"EditIcon"}
-              value={passwordValue}
+              value={password}
               name={"login"}
               error={false}
               errorText={"Ошибка"}

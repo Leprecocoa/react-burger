@@ -1,4 +1,10 @@
-import { getIngredients, login, register, sendOrder } from "../utils/api";
+import {
+  getIngredients,
+  login,
+  logout,
+  register,
+  sendOrder,
+} from "../utils/api";
 import {
   AppDispatch,
   AppThunk,
@@ -6,6 +12,7 @@ import {
   TOrder,
   TSelectedIngredient,
 } from "../utils/types";
+import { setCookie } from "../utils/utils";
 
 export const GET_INGREDIENTS_REQUEST: "GET_INGREDIENTS_REQUEST" =
   "GET_INGREDIENTS_REQUEST";
@@ -32,6 +39,7 @@ export const REORDER_CONSTRUCTOR_ITEM: "REORDER_CONSTRUCTOR_ITEM" =
 export const USER_REGISTER: "USER_REGISTER" = "USER_REGISTER";
 export const USER_LOGIN: "USER_LOGIN" = "USER_LOGIN";
 export const REFRESH_TOKEN: "REFRESH_TOKEN" = "REFRESH_TOKEN";
+export const USER_LOGOUT: "USER_LOGOUT" = "USER_LOGOUT";
 
 export interface IGetIngredientsRequestAction {
   readonly type: typeof GET_INGREDIENTS_REQUEST;
@@ -105,6 +113,10 @@ export interface IRefreshToken {
   readonly type: typeof REFRESH_TOKEN;
 }
 
+export interface IUserLogout {
+  readonly type: typeof USER_LOGOUT;
+}
+
 export type TActions =
   | IGetIngredientsRequestAction
   | IGetIngredientsSuccessAction
@@ -121,7 +133,8 @@ export type TActions =
   | IReorderConstructorItemAction
   | IUserRegister
   | IUserLogin
-  | IRefreshToken;
+  | IRefreshToken
+  | IUserLogout;
 
 export const getIngredientsApi: () => AppThunk = () => {
   return (dispatch) => {
@@ -185,10 +198,34 @@ export const registerUser: any = (
 
 export const loginUser: any = ({ email, password }: any, history: any) => {
   return () => {
-    console.log(email, password);
-    login({ email, password }).then((res) => {
+    login({ email, password }).then((res: any) => {
       console.log(res);
-      history.push("/");
+      let authToken = res.accessToken.split("Bearer ")[1];
+      if (authToken && res.refreshToken) {
+        setCookie("authToken", authToken);
+        localStorage.setItem("refreshToken", res.refreshToken);
+      }
+      if (res.success) {
+        history.push("/");
+      }
     });
+  };
+};
+
+export const logoutUser: any = (refreshToken: string, history: any) => {
+  return (dispatch: AppDispatch) => {
+    logout(refreshToken)
+      .then((res: any) => {
+        console.log(res);
+        if (res.success) {
+          localStorage.removeItem("refreshToken");
+        }
+      })
+      .then((res) => {
+        dispatch({
+          type: USER_LOGOUT,
+        });
+        history.push("/login");
+      });
   };
 };

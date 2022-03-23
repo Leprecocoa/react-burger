@@ -5,6 +5,7 @@
 .nav {
   display: flex;
   flex-direction: column;
+  width: 320px;
 }
 .active_link {
   color: #fff;
@@ -14,6 +15,9 @@
   text-decoration: none;
 }
 
-.nav_text {
-  max-width: 320px;
+.logout {
+  align-self: flex-start;
+  border: none;
+  background: none;
+  cursor: pointer;
 }
