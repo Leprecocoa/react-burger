@@ -1,13 +1,11 @@
 import { useCallback, useEffect } from "react";
 import mainSectionStyles from "./main.module.css";
 import { OrderDetails } from "../order-details/order-details";
-import { IngredientDetails } from "../ingredient-details/ingredient-details";
 import { Modal } from "../modal/modal";
 import BurgerIngredients from "../burger-ingredients/burger-ingredients";
 import BurgerConstructorDroppable from "../burger-constructor-droppable/burger-constructor-droppable";
 import {
   DELETE_ORDER_DATA,
-  DELETE_SELECTED_INGREDIENT_DATA,
   getIngredientsApi,
   getOrderNumber,
   SELECT_INGREDIENT,
@@ -17,7 +15,7 @@ import { TIngredient, useAppDispatch, useAppSelector } from "../../utils/types";
 function Main() {
   const dispatch = useAppDispatch();
 
-  const { selectedIngredient, order } = useAppSelector(
+  const { order } = useAppSelector(
     ({
       ingredients: { ingredients, selectedIngredient },
       order: { order },
@@ -41,12 +39,6 @@ function Main() {
     },
     [dispatch]
   );
-
-  const handleIngredientDetailsClose = useCallback(() => {
-    dispatch({
-      type: DELETE_SELECTED_INGREDIENT_DATA,
-    });
-  }, [dispatch]);
 
   useEffect(() => {
     dispatch(getIngredientsApi());
@@ -75,15 +67,7 @@ function Main() {
         handleIngredientDetailsOpen={handleIngredientDetailsOpen}
       />
       <BurgerConstructorDroppable onSubmit={handleOrderDetailsOpen} />
-      <Modal
-        isVisible={!!selectedIngredient}
-        onClose={handleIngredientDetailsClose}
-        title="Детали ингредиента"
-      >
-        {selectedIngredient ? (
-          <IngredientDetails ingredient={selectedIngredient} />
-        ) : null}
-      </Modal>
+
       <Modal isVisible={!!order} onClose={handleOrderDetailsClose}>
         {order ? <OrderDetails order={order} /> : null}
       </Modal>

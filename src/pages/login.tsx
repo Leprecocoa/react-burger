@@ -4,7 +4,7 @@ import {
   PasswordInput,
 } from "@ya.praktikum/react-developer-burger-ui-components";
 import { useCallback } from "react";
-import { Link, Redirect, useHistory } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import Header from "../components/header/header";
 import { loginUser, USER_LOGIN } from "../services/actions";
 import { useAppDispatch, useAppSelector } from "../utils/types";
@@ -14,7 +14,7 @@ export const Login = () => {
   const dispatch = useAppDispatch();
   const history = useHistory();
 
-  const { email, password, loggedIn } = useAppSelector((state) => {
+  const { email, password } = useAppSelector((state) => {
     return {
       email: state.user.email,
       password: state.user.password,

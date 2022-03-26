@@ -1,8 +1,13 @@
-import { Input } from "@ya.praktikum/react-developer-burger-ui-components";
+import {
+  Button,
+  Input,
+} from "@ya.praktikum/react-developer-burger-ui-components";
+import { useCallback, useEffect, useState } from "react";
 import { NavLink, useHistory } from "react-router-dom";
 import Header from "../components/header/header";
-import { logoutUser } from "../services/actions";
+import { getUserInfo, logoutUser, setUserInfo } from "../services/actions";
 import { useAppDispatch, useAppSelector } from "../utils/types";
+import { getCookie } from "../utils/utils";
 import styles from "./profile.module.css";
 
 export const Profile = () => {
@@ -13,9 +18,60 @@ export const Profile = () => {
       password: state.user.password,
     };
   });
+  const [formvalue, setFormvalue] = useState({
+    username: name,
+    useremail: email,
+    userpassword: password,
+  });
 
   const dispatch = useAppDispatch();
   const history = useHistory();
+
+  useEffect(() => {
+    dispatch(getUserInfo(getCookie("authToken")));
+  }, [dispatch]);
+
+  useEffect(() => {
+    setFormvalue((prevstate) => ({
+      ...prevstate,
+      username: name || "",
+      useremail: email || "",
+    }));
+  }, [email, name]);
+
+  const handleChange = useCallback((evt) => {
+    setFormvalue((prevstate) => ({
+      ...prevstate,
+      [evt.target.name]: evt.target.value,
+    }));
+  }, []);
+
+  const handleSubmit = useCallback(
+    (evt) => {
+      evt.preventDefault();
+      dispatch(
+        setUserInfo(getCookie("authToken"), {
+          name: formvalue.username,
+          email: formvalue.useremail,
+          password: formvalue.userpassword,
+        })
+      );
+    },
+    [dispatch, formvalue]
+  );
+
+  const handleCancel = () => {
+    setFormvalue({
+      username: name,
+      useremail: email,
+      userpassword: password,
+    });
+  };
+
+  const isFormChanged =
+    formvalue.username !== name ||
+    formvalue.useremail !== email ||
+    formvalue.userpassword !== password;
 
   return (
     <>
@@ -51,15 +107,17 @@ export const Profile = () => {
             В этом разделе вы можете изменить свои персональные данные
           </p>
         </nav>
-        <form>
+        <form className={styles.form} onSubmit={handleSubmit}>
           <div className="mb-6">
             <Input
               type={"text"}
               placeholder={"Имя"}
-              onChange={(e) => {}}
+              onChange={(evt) => {
+                handleChange(evt);
+              }}
               icon={"EditIcon"}
-              value={name}
-              name={"name"}
+              value={formvalue.username}
+              name={"username"}
               error={false}
               errorText={"Ошибка"}
               size={"default"}
@@ -69,12 +127,14 @@ export const Profile = () => {
             <Input
               type={"text"}
               placeholder={"Логин"}
-              onChange={(e) => {}}
+              onChange={(evt) => {
+                handleChange(evt);
+              }}
               icon={"EditIcon"}
-              value={email}
-              name={"login"}
+              value={formvalue.useremail}
+              name={"useremail"}
               error={false}
-              errorText={"Ошибка"}
+              errorText="Ошибка"
               size={"default"}
             />
           </div>
@@ -82,15 +142,33 @@ export const Profile = () => {
             <Input
               type={"password"}
               placeholder={"Пароль"}
-              onChange={(e) => {}}
+              onChange={(evt) => {
+                handleChange(evt);
+              }}
               icon={"EditIcon"}
-              value={password}
-              name={"login"}
+              value={formvalue.userpassword}
+              name={"userpassword"}
               error={false}
               errorText={"Ошибка"}
               size={"default"}
             />
           </div>
+          {isFormChanged && (
+            <div className="mt-6">
+              <Button type="primary" size="small">
+                Сохранить
+              </Button>
+              <Button
+                type="secondary"
+                size="small"
+                onClick={() => {
+                  handleCancel();
+                }}
+              >
+                Отмена
+              </Button>
+            </div>
+          )}
         </form>
       </div>
     </>

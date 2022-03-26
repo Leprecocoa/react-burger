@@ -1,9 +1,12 @@
 import {
   getIngredients,
+  getUserInfoApi,
   login,
   logout,
+  refreshToken,
   register,
   sendOrder,
+  setUserInfoApi,
 } from "../utils/api";
 import {
   AppDispatch,
@@ -40,6 +43,8 @@ export const USER_REGISTER: "USER_REGISTER" = "USER_REGISTER";
 export const USER_LOGIN: "USER_LOGIN" = "USER_LOGIN";
 export const REFRESH_TOKEN: "REFRESH_TOKEN" = "REFRESH_TOKEN";
 export const USER_LOGOUT: "USER_LOGOUT" = "USER_LOGOUT";
+export const GET_USER_INFO: "GET_USER_INFO" = "GET_USER_INFO";
+export const SET_USER_INFO: "SET_USER_INFO" = "SET_USER_INFO";
 
 export interface IGetIngredientsRequestAction {
   readonly type: typeof GET_INGREDIENTS_REQUEST;
@@ -117,6 +122,14 @@ export interface IUserLogout {
   readonly type: typeof USER_LOGOUT;
 }
 
+export interface IGetUserInfo {
+  readonly type: typeof GET_USER_INFO;
+}
+
+export interface ISetUserInfo {
+  readonly type: typeof SET_USER_INFO;
+}
+
 export type TActions =
   | IGetIngredientsRequestAction
   | IGetIngredientsSuccessAction
@@ -134,7 +147,9 @@ export type TActions =
   | IUserRegister
   | IUserLogin
   | IRefreshToken
-  | IUserLogout;
+  | IUserLogout
+  | IGetUserInfo
+  | ISetUserInfo;
 
 export const getIngredientsApi: () => AppThunk = () => {
   return (dispatch) => {
@@ -190,7 +205,7 @@ export const registerUser: any = (
 ) => {
   return () => {
     register({ email, password, name }).then((res) => {
-      console.log(res);
+      console.log("registerUser", res);
       history.push("/login");
     });
   };
@@ -199,7 +214,7 @@ export const registerUser: any = (
 export const loginUser: any = ({ email, password }: any, history: any) => {
   return () => {
     login({ email, password }).then((res: any) => {
-      console.log(res);
+      console.log("loginUser", res);
       let authToken = res.accessToken.split("Bearer ")[1];
       if (authToken && res.refreshToken) {
         setCookie("authToken", authToken);
@@ -216,7 +231,7 @@ export const logoutUser: any = (refreshToken: string, history: any) => {
   return (dispatch: AppDispatch) => {
     logout(refreshToken)
       .then((res: any) => {
-        console.log(res);
+        console.log("logoutUser", res);
         if (res.success) {
           localStorage.removeItem("refreshToken");
         }
@@ -226,6 +241,91 @@ export const logoutUser: any = (refreshToken: string, history: any) => {
           type: USER_LOGOUT,
         });
         history.push("/login");
+      });
+  };
+};
+
+export const getUserInfo: any = (authToken: any) => {
+  return (dispatch: AppDispatch) => {
+    getUserInfoApi(authToken)
+      .then((res: any) => {
+        console.log("getUserInfoApi", res);
+        dispatch({
+          type: GET_USER_INFO,
+          payload: {
+            name: res.user.name,
+            email: res.user.email,
+          },
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+        if (err.data.message === "jwt expired") {
+          const refreshingToken = localStorage.getItem("refreshToken");
+          if (refreshingToken == null) {
+            return;
+          }
+          refreshToken(refreshingToken)
+            .then((res: any) => {
+              console.log("refreshToken", res);
+              let authToken = res.accessToken.split("Bearer ")[1];
+              if (authToken && res.refreshToken) {
+                setCookie("authToken", authToken);
+                localStorage.setItem("refreshToken", res.refreshToken);
+              }
+            })
+            .then((res: any) => {
+              console.log(res);
+              dispatch({
+                type: GET_USER_INFO,
+                payload: {
+                  name: res.user.name,
+                  email: res.user.email,
+                },
+              });
+            })
+            .catch((err) => console.log(err));
+        }
+      });
+  };
+};
+
+export const setUserInfo: any = (
+  authToken: any,
+  { name, email, password }: any
+) => {
+  return (dispatch: AppDispatch) => {
+    console.log(name);
+    setUserInfoApi(authToken, { name, email, password })
+      .then((res: any) => {
+        console.log("setUserInfoApi", res);
+        dispatch({
+          type: SET_USER_INFO,
+          payload: {
+            name: res.user.name,
+            email: res.user.email,
+            password: res.user.password,
+          },
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+        if (err.data.message === "jwt expired") {
+          const refreshingToken = localStorage.getItem("refreshToken");
+          if (refreshingToken == null) {
+            return;
+          }
+          refreshToken(refreshingToken)
+            .then((res: any) => {
+              console.log("refreshToken", res);
+              let authToken = res.accessToken.split("Bearer ")[1];
+              if (authToken && res.refreshToken) {
+                setCookie("authToken", authToken);
+                localStorage.setItem("refreshToken", res.refreshToken);
+              }
+            })
+            .catch((err) => console.log(err));
+        }
       });
   };
 };

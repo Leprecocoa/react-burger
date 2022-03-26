@@ -3,7 +3,9 @@ const checkResponse: <T = {}>(res: Response) => Promise<T> = (res) => {
   if (res && res.ok) {
     return res.json();
   }
-  return Promise.reject(`Ошибка: ${res.status}`);
+  return res
+    .json()
+    .then((data) => Promise.reject({ message: `Ошибка ${res.status}`, data }));
 };
 
 export function getIngredients() {
@@ -54,7 +56,15 @@ export function login({
   }).then((res) => checkResponse(res));
 }
 
-export function refreshToken(token: string) {
+export function logout(refreshToken: string) {
+  return fetch(`${API_URL}/auth/logout`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ token: refreshToken }),
+  }).then((res) => checkResponse(res));
+}
+
+export function refreshToken(refreshToken: string) {
   return fetch(`${API_URL}/auth/token`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -62,10 +72,23 @@ export function refreshToken(token: string) {
   }).then((res) => checkResponse(res));
 }
 
-export function logout(refreshToken: string) {
-  return fetch(`${API_URL}/auth/logout`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ token: refreshToken }),
+export function getUserInfoApi(authToken: string) {
+  return fetch(`${API_URL}/auth/user`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${authToken}`,
+    },
+  }).then((res) => checkResponse(res));
+}
+
+export function setUserInfoApi(authToken: any, { name, email, password }: any) {
+  return fetch(`${API_URL}/auth/user`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${authToken}`,
+    },
+    body: JSON.stringify({ name, email, password }),
   }).then((res) => checkResponse(res));
 }

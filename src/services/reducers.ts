@@ -17,6 +17,8 @@ import {
   USER_LOGIN,
   USER_REGISTER,
   USER_LOGOUT,
+  GET_USER_INFO,
+  SET_USER_INFO,
 } from "./actions";
 
 // ingredients reducer
@@ -232,6 +234,21 @@ export const userReducer: Reducer<TUserState> = (
         email: "",
         password: "",
         loggedIn: false,
+      };
+    }
+    case GET_USER_INFO: {
+      return {
+        ...state,
+        email: action.payload.email ?? state.email,
+        name: action.payload.name ?? state.name,
+      };
+    }
+    case SET_USER_INFO: {
+      return {
+        ...state,
+        email: action.payload.email ?? state.email,
+        name: action.payload.name ?? state.name,
+        password: action.payload.password ?? state.password,
       };
     }
     default:

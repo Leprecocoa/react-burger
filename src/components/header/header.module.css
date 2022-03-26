@@ -29,10 +29,10 @@
   border: none;
   background: none;
   text-decoration: none;
-  color: inherit;
+  color: #8585ad;
   cursor: pointer;
 }
 
-.navLinkInactive {
-  color: #8585ad;
+.active_link {
+  color: #fff;
 }
