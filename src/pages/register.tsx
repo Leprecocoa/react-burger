@@ -34,7 +34,7 @@ export const Register = () => {
   const handleSubmit = useCallback(
     (evt) => {
       evt.preventDefault();
-      dispatch(registerUser({ email, password, name }, history));
+      dispatch(registerUser(email, password, name, history));
     },
     [dispatch, email, name, password, history]
   );

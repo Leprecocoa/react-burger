@@ -50,11 +50,12 @@ export const Profile = () => {
     (evt) => {
       evt.preventDefault();
       dispatch(
-        setUserInfo(getCookie("authToken"), {
-          name: formvalue.username,
-          email: formvalue.useremail,
-          password: formvalue.userpassword,
-        })
+        setUserInfo(
+          getCookie("authToken"),
+          formvalue.username,
+          formvalue.useremail,
+          formvalue.userpassword
+        )
       );
     },
     [dispatch, formvalue]
@@ -93,11 +94,14 @@ export const Profile = () => {
           </NavLink>
           <button
             className={`${styles.logout} text text_type_main-medium text_color_inactive mb-6`}
-            onClick={() =>
+            onClick={() => {
+              if (localStorage.getItem("refreshToken") == null) {
+                return;
+              }
               dispatch(
                 logoutUser(localStorage.getItem("refreshToken"), history)
-              )
-            }
+              );
+            }}
           >
             Выход
           </button>

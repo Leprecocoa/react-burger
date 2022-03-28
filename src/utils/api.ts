@@ -53,7 +53,13 @@ export function login({
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email, password }),
-  }).then((res) => checkResponse(res));
+  }).then((res) =>
+    checkResponse<{
+      accessToken: string | null;
+      refreshToken: string | null;
+      success: boolean;
+    }>(res)
+  );
 }
 
 export function logout(refreshToken: string) {
@@ -61,7 +67,9 @@ export function logout(refreshToken: string) {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ token: refreshToken }),
-  }).then((res) => checkResponse(res));
+  }).then((res) =>
+    checkResponse<{ refreshToken: string | null; success: boolean }>(res)
+  );
 }
 
 export function refreshToken(refreshToken: string) {
@@ -69,7 +77,12 @@ export function refreshToken(refreshToken: string) {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ token: refreshToken }),
-  }).then((res) => checkResponse(res));
+  }).then((res) =>
+    checkResponse<{
+      accessToken: string;
+      refreshToken: string;
+    }>(res)
+  );
 }
 
 export function getUserInfoApi(authToken: string) {
@@ -79,10 +92,15 @@ export function getUserInfoApi(authToken: string) {
       "Content-Type": "application/json",
       Authorization: `Bearer ${authToken}`,
     },
-  }).then((res) => checkResponse(res));
+  }).then((res) =>
+    checkResponse<{ user: { name: string; email: string } }>(res)
+  );
 }
 
-export function setUserInfoApi(authToken: any, { name, email, password }: any) {
+export function setUserInfoApi(
+  authToken: string,
+  { name, email, password }: { name: string; email: string; password: string }
+) {
   return fetch(`${API_URL}/auth/user`, {
     method: "PATCH",
     headers: {
@@ -90,7 +108,15 @@ export function setUserInfoApi(authToken: any, { name, email, password }: any) {
       Authorization: `Bearer ${authToken}`,
     },
     body: JSON.stringify({ name, email, password }),
-  }).then((res) => checkResponse(res));
+  }).then((res) =>
+    checkResponse<{
+      user: {
+        name: string;
+        email: string;
+        password: string;
+      };
+    }>(res)
+  );
 }
 
 export function forgotPasswordApi(email: string) {
@@ -98,7 +124,7 @@ export function forgotPasswordApi(email: string) {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email }),
-  }).then((res) => checkResponse(res));
+  }).then((res) => checkResponse<{ success: boolean }>(res));
 }
 
 export function resetPasswordApi(password: string, resetToken: string) {
@@ -106,5 +132,5 @@ export function resetPasswordApi(password: string, resetToken: string) {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ password, token: resetToken }),
-  }).then((res) => checkResponse(res));
+  }).then((res) => checkResponse<{ success: boolean }>(res));
 }

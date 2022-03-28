@@ -33,7 +33,7 @@ export const Login = () => {
   const handleSubmit = useCallback(
     (evt) => {
       evt.preventDefault();
-      dispatch(loginUser({ email, password }, history));
+      dispatch(loginUser(email, password, history));
     },
     [dispatch, email, password, history]
   );

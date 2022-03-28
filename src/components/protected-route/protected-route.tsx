@@ -1,14 +1,20 @@
+import { ComponentType } from "react";
 import { Route, Redirect } from "react-router-dom";
 
-function ProtectedRoute({ component: Component, path, ...props }: any) {
+function ProtectedRoute({
+  component: Component,
+  path,
+  loggedIn,
+  ...props
+}: {
+  loggedIn: boolean;
+  path: string;
+  component: ComponentType;
+}) {
   return (
     <Route path={path}>
       {() => {
-        return props.loggedIn ? (
-          <Component {...props} />
-        ) : (
-          <Redirect to="/login" />
-        );
+        return loggedIn ? <Component {...props} /> : <Redirect to="/login" />;
       }}
     </Route>
   );

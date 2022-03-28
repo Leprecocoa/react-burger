@@ -1,3 +1,4 @@
+import { History, LocationState } from "history";
 import {
   forgotPasswordApi,
   getIngredients,
@@ -220,10 +221,12 @@ export const getOrderNumber: (ingredientIds: number[]) => AppThunk = (
   };
 };
 
-export const registerUser: any = (
-  { email, password, name }: any,
-  history: any
-) => {
+export const registerUser: (
+  email: string,
+  password: string,
+  name: string,
+  history: History<LocationState>
+) => AppThunk = (email, password, name, history) => {
   return () => {
     register({ email, password, name }).then((res) => {
       console.log("registerUser", res);
@@ -232,10 +235,17 @@ export const registerUser: any = (
   };
 };
 
-export const loginUser: any = ({ email, password }: any, history: any) => {
+export const loginUser: (
+  email: string,
+  password: string,
+  history: History<LocationState>
+) => AppThunk = (email, password, history) => {
   return (dispatch: AppDispatch) => {
-    login({ email, password }).then((res: any) => {
+    login({ email, password }).then((res) => {
       console.log("loginUser", res);
+      if (res.accessToken == null) {
+        return;
+      }
       let authToken = res.accessToken.split("Bearer ")[1];
       if (authToken && res.refreshToken) {
         setCookie("authToken", authToken);
@@ -249,10 +259,16 @@ export const loginUser: any = ({ email, password }: any, history: any) => {
   };
 };
 
-export const logoutUser: any = (refreshToken: string, history: any) => {
+export const logoutUser: (
+  refreshToken: string | null,
+  history: History<LocationState>
+) => AppThunk = (refreshToken, history) => {
   return (dispatch: AppDispatch) => {
+    if (refreshToken == null) {
+      return;
+    }
     logout(refreshToken)
-      .then((res: any) => {
+      .then((res) => {
         console.log("logoutUser", res);
         if (res.success) {
           localStorage.removeItem("refreshToken");
@@ -267,10 +283,15 @@ export const logoutUser: any = (refreshToken: string, history: any) => {
   };
 };
 
-export const getUserInfo: any = (authToken: any) => {
+export const getUserInfo: (authToken: string | undefined) => AppThunk = (
+  authToken
+) => {
   return (dispatch: AppDispatch) => {
+    if (authToken == null) {
+      return;
+    }
     getUserInfoApi(authToken)
-      .then((res: any) => {
+      .then((res) => {
         console.log("getUserInfoApi", res);
         dispatch({
           type: GET_USER_INFO,
@@ -288,7 +309,7 @@ export const getUserInfo: any = (authToken: any) => {
             return;
           }
           refreshToken(refreshingToken)
-            .then((res: any) => {
+            .then((res) => {
               console.log("refreshToken", res);
               let authToken = res.accessToken.split("Bearer ")[1];
               if (authToken && res.refreshToken) {
@@ -302,13 +323,18 @@ export const getUserInfo: any = (authToken: any) => {
   };
 };
 
-export const setUserInfo: any = (
-  authToken: any,
-  { name, email, password }: any
-) => {
+export const setUserInfo: (
+  authToken: string | undefined,
+  name: string,
+  email: string,
+  password: string
+) => AppThunk = (authToken, name, email, password) => {
   return (dispatch: AppDispatch) => {
+    if (authToken == null) {
+      return;
+    }
     setUserInfoApi(authToken, { name, email, password })
-      .then((res: any) => {
+      .then((res) => {
         console.log("setUserInfoApi", res);
         dispatch({
           type: SET_USER_INFO,
@@ -327,7 +353,7 @@ export const setUserInfo: any = (
             return;
           }
           refreshToken(refreshingToken)
-            .then((res: any) => {
+            .then((res) => {
               console.log("refreshToken", res);
               let authToken = res.accessToken.split("Bearer ")[1];
               if (authToken && res.refreshToken) {
@@ -341,10 +367,13 @@ export const setUserInfo: any = (
   };
 };
 
-export const forgotPassword = (email: string, history: any) => {
+export const forgotPassword = (
+  email: string,
+  history: History<LocationState>
+) => {
   return () => {
     forgotPasswordApi(email)
-      .then((res: any) => {
+      .then((res) => {
         console.log("forgotPasswordApi", res);
         if (res.success) {
           history.push("/reset-password");
@@ -358,10 +387,10 @@ export const forgotPassword = (email: string, history: any) => {
 export const resetPassword = (
   password: string,
   resetToken: string,
-  history: any
+  history: History<LocationState>
 ) => {
   return (dispatch: AppDispatch) => {
-    resetPasswordApi(password, resetToken).then((res: any) => {
+    resetPasswordApi(password, resetToken).then((res) => {
       console.log(res);
       if (res.success) {
         history.push("/");
