@@ -11,6 +11,7 @@ import { useAppSelector } from "../../utils/types";
 import ProtectedRoute from "../protected-route/protected-route";
 import { IngredientDetailsPage } from "../ingredient-details/ingredient-details-page";
 import { IngredientDetailsModal } from "../ingredient-details-modal/ingredient-details-modal";
+import PublicRoute from "../public-route/public-route";
 
 export function AppRoutes() {
   const { loggedIn } = useAppSelector((state) => {
@@ -31,24 +32,25 @@ export function AppRoutes() {
   return (
     <div className={appstyles.page}>
       <Switch location={background || location}>
-        <ProtectedRoute
-          exact
-          path="/"
+        <Route exact path="/">
+          <Constructor />
+        </Route>
+        <PublicRoute
+          path="/register"
+          component={Register}
           loggedIn={loggedIn}
-          component={Constructor}
         />
-        <Route path="/register">
-          <Register />
-        </Route>
-        <Route path="/login">
-          <Login />
-        </Route>
-        <Route path="/forgot-password">
-          <ForgotPassword />
-        </Route>
-        <Route path="/reset-password">
-          <ResetPassword />
-        </Route>
+        <PublicRoute path="/login" component={Login} loggedIn={loggedIn} />
+        <PublicRoute
+          path="/forgot-password"
+          component={ForgotPassword}
+          loggedIn={loggedIn}
+        />
+        <PublicRoute
+          path="/reset-password"
+          component={ResetPassword}
+          loggedIn={loggedIn}
+        />
         <ProtectedRoute
           path="/profile"
           loggedIn={loggedIn}

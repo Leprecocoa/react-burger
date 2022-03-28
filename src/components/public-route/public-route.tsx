@@ -1,17 +1,13 @@
 import { Route, Redirect } from "react-router-dom";
 
-function ProtectedRoute({ component: Component, ...props }: any) {
+function PublicRoute({ component: Component, path, ...props }: any) {
   return (
-    <Route>
+    <Route path={path}>
       {() => {
-        return !props.loggedIn ? (
-          <Component {...props} />
-        ) : (
-          <Redirect to="/login" />
-        );
+        return !props.loggedIn ? <Component {...props} /> : <Redirect to="/" />;
       }}
     </Route>
   );
 }
 
-export default ProtectedRoute;
+export default PublicRoute;

@@ -2,13 +2,36 @@ import {
   Button,
   Input,
 } from "@ya.praktikum/react-developer-burger-ui-components";
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useCallback } from "react";
+import { Link, useHistory } from "react-router-dom";
 import Header from "../components/header/header";
+import { forgotPassword, FORGOT_PASSWORD_SET_EMAIL } from "../services/actions";
+import { useAppDispatch, useAppSelector } from "../utils/types";
 import styles from "./pages.module.css";
 
 export const ForgotPassword = () => {
-  const [emailValue, setEmailValue] = useState("");
+  const dispatch = useAppDispatch();
+  const history = useHistory();
+
+  const { email } = useAppSelector((state) => {
+    return { email: state.resetPassword.email };
+  });
+
+  const handleChange = useCallback(
+    (evt) => {
+      const { name, value } = evt.target;
+      dispatch({ type: FORGOT_PASSWORD_SET_EMAIL, payload: { [name]: value } });
+    },
+    [dispatch]
+  );
+
+  const handleSubmit = useCallback(
+    (evt) => {
+      evt.preventDefault();
+      dispatch(forgotPassword(email, history));
+    },
+    [dispatch, email, history]
+  );
 
   return (
     <>
@@ -18,13 +41,15 @@ export const ForgotPassword = () => {
           <h1 className="text text_type_main-medium mb-6">
             Восстановление пароля
           </h1>
-          <form className={styles.form}>
+          <form className={styles.form} onSubmit={handleSubmit}>
             <div className="mb-6">
               <Input
                 type={"email"}
                 placeholder={"Укажите e-mail"}
-                onChange={(e) => setEmailValue(e.target.value)}
-                value={emailValue}
+                onChange={(evt) => {
+                  handleChange(evt);
+                }}
+                value={email}
                 name={"email"}
                 error={false}
                 errorText={"Ошибка"}

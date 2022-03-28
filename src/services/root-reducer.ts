@@ -4,6 +4,7 @@ import {
   ingredientsReducer,
   burgerConstructorReducer,
   userReducer,
+  resetPasswordReducer,
 } from "./reducers";
 
 export const rootReducer = combineReducers({
@@ -11,4 +12,5 @@ export const rootReducer = combineReducers({
   ingredients: ingredientsReducer,
   burgerConstructor: burgerConstructorReducer,
   user: userReducer,
+  resetPassword: resetPasswordReducer,
 });

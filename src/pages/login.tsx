@@ -6,7 +6,7 @@ import {
 import { useCallback } from "react";
 import { Link, useHistory } from "react-router-dom";
 import Header from "../components/header/header";
-import { loginUser, USER_LOGIN } from "../services/actions";
+import { loginUser, USER_SET_DATA } from "../services/actions";
 import { useAppDispatch, useAppSelector } from "../utils/types";
 import styles from "./pages.module.css";
 
@@ -25,7 +25,7 @@ export const Login = () => {
   const handleChange = useCallback(
     (evt) => {
       const { name, value } = evt.target;
-      dispatch({ type: USER_LOGIN, payload: { [name]: value } });
+      dispatch({ type: USER_SET_DATA, payload: { [name]: value } });
     },
     [dispatch]
   );

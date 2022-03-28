@@ -11,19 +11,23 @@ import {
   SELECT_INGREDIENT,
 } from "../../services/actions";
 import { TIngredient, useAppDispatch, useAppSelector } from "../../utils/types";
+import { useHistory } from "react-router-dom";
 
 function Main() {
   const dispatch = useAppDispatch();
+  const history = useHistory();
 
-  const { order } = useAppSelector(
+  const { order, loggedIn } = useAppSelector(
     ({
       ingredients: { ingredients, selectedIngredient },
       order: { order },
+      user: { loggedIn },
     }) => {
       return {
         ingredients,
         selectedIngredient,
         order,
+        loggedIn,
       };
     }
   );
@@ -46,13 +50,17 @@ function Main() {
 
   const handleOrderDetailsOpen = useCallback(
     (ingredients) => {
-      dispatch(
-        getOrderNumber(
-          ingredients.map((ingredient: TIngredient) => ingredient._id)
-        )
-      );
+      if (!loggedIn) {
+        history.push("/login");
+      } else {
+        dispatch(
+          getOrderNumber(
+            ingredients.map((ingredient: TIngredient) => ingredient._id)
+          )
+        );
+      }
     },
-    [dispatch]
+    [dispatch, history, loggedIn]
   );
 
   const handleOrderDetailsClose = useCallback(() => {

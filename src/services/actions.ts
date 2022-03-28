@@ -1,10 +1,12 @@
 import {
+  forgotPasswordApi,
   getIngredients,
   getUserInfoApi,
   login,
   logout,
   refreshToken,
   register,
+  resetPasswordApi,
   sendOrder,
   setUserInfoApi,
 } from "../utils/api";
@@ -41,10 +43,14 @@ export const REORDER_CONSTRUCTOR_ITEM: "REORDER_CONSTRUCTOR_ITEM" =
   "REORDER_CONSTRUCTOR_ITEM";
 export const USER_REGISTER: "USER_REGISTER" = "USER_REGISTER";
 export const USER_LOGIN: "USER_LOGIN" = "USER_LOGIN";
+export const USER_SET_DATA: "USER_SET_DATA" = "USER_SET_DATA";
 export const REFRESH_TOKEN: "REFRESH_TOKEN" = "REFRESH_TOKEN";
 export const USER_LOGOUT: "USER_LOGOUT" = "USER_LOGOUT";
 export const GET_USER_INFO: "GET_USER_INFO" = "GET_USER_INFO";
 export const SET_USER_INFO: "SET_USER_INFO" = "SET_USER_INFO";
+export const FORGOT_PASSWORD_SET_EMAIL: "FORGOT_PASSWORD_SET_EMAIL" =
+  "FORGOT_PASSWORD_SET_EMAIL";
+export const RESET_PASSWORD: "RESET_PASSWORD" = "RESET_PASSWORD";
 
 export interface IGetIngredientsRequestAction {
   readonly type: typeof GET_INGREDIENTS_REQUEST;
@@ -110,6 +116,10 @@ export interface IUserRegister {
   readonly type: typeof USER_REGISTER;
 }
 
+export interface IUserSetData {
+  readonly type: typeof USER_SET_DATA;
+}
+
 export interface IUserLogin {
   readonly type: typeof USER_LOGIN;
 }
@@ -130,6 +140,14 @@ export interface ISetUserInfo {
   readonly type: typeof SET_USER_INFO;
 }
 
+export interface IForgotPasswordSetEmail {
+  readonly type: typeof FORGOT_PASSWORD_SET_EMAIL;
+}
+
+export interface IResetPassword {
+  readonly type: typeof RESET_PASSWORD;
+}
+
 export type TActions =
   | IGetIngredientsRequestAction
   | IGetIngredientsSuccessAction
@@ -146,10 +164,13 @@ export type TActions =
   | IReorderConstructorItemAction
   | IUserRegister
   | IUserLogin
+  | IUserSetData
   | IRefreshToken
   | IUserLogout
   | IGetUserInfo
-  | ISetUserInfo;
+  | ISetUserInfo
+  | IForgotPasswordSetEmail
+  | IResetPassword;
 
 export const getIngredientsApi: () => AppThunk = () => {
   return (dispatch) => {
@@ -212,7 +233,7 @@ export const registerUser: any = (
 };
 
 export const loginUser: any = ({ email, password }: any, history: any) => {
-  return () => {
+  return (dispatch: AppDispatch) => {
     login({ email, password }).then((res: any) => {
       console.log("loginUser", res);
       let authToken = res.accessToken.split("Bearer ")[1];
@@ -221,6 +242,7 @@ export const loginUser: any = ({ email, password }: any, history: any) => {
         localStorage.setItem("refreshToken", res.refreshToken);
       }
       if (res.success) {
+        dispatch({ type: USER_LOGIN });
         history.push("/");
       }
     });
@@ -274,16 +296,6 @@ export const getUserInfo: any = (authToken: any) => {
                 localStorage.setItem("refreshToken", res.refreshToken);
               }
             })
-            .then((res: any) => {
-              console.log(res);
-              dispatch({
-                type: GET_USER_INFO,
-                payload: {
-                  name: res.user.name,
-                  email: res.user.email,
-                },
-              });
-            })
             .catch((err) => console.log(err));
         }
       });
@@ -295,7 +307,6 @@ export const setUserInfo: any = (
   { name, email, password }: any
 ) => {
   return (dispatch: AppDispatch) => {
-    console.log(name);
     setUserInfoApi(authToken, { name, email, password })
       .then((res: any) => {
         console.log("setUserInfoApi", res);
@@ -327,5 +338,35 @@ export const setUserInfo: any = (
             .catch((err) => console.log(err));
         }
       });
+  };
+};
+
+export const forgotPassword = (email: string, history: any) => {
+  return () => {
+    forgotPasswordApi(email)
+      .then((res: any) => {
+        console.log("forgotPasswordApi", res);
+        if (res.success) {
+          history.push("/reset-password");
+          console.log("redir", res);
+        }
+      })
+      .catch((err) => console.log(err));
+  };
+};
+
+export const resetPassword = (
+  password: string,
+  resetToken: string,
+  history: any
+) => {
+  return (dispatch: AppDispatch) => {
+    resetPasswordApi(password, resetToken).then((res: any) => {
+      console.log(res);
+      if (res.success) {
+        history.push("/");
+        dispatch({ type: RESET_PASSWORD });
+      }
+    });
   };
 };

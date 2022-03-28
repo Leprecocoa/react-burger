@@ -14,11 +14,14 @@ import {
   DELETE_IGREDIENT,
   REORDER_CONSTRUCTOR_ITEM,
   TActions,
-  USER_LOGIN,
   USER_REGISTER,
   USER_LOGOUT,
   GET_USER_INFO,
   SET_USER_INFO,
+  USER_SET_DATA,
+  USER_LOGIN,
+  FORGOT_PASSWORD_SET_EMAIL,
+  RESET_PASSWORD,
 } from "./actions";
 
 // ingredients reducer
@@ -220,11 +223,16 @@ export const userReducer: Reducer<TUserState> = (
         name: action.payload.name ?? state.name,
       };
     }
-    case USER_LOGIN: {
+    case USER_SET_DATA: {
       return {
         ...state,
         email: action.payload.email ?? state.email,
         password: action.payload.password ?? state.password,
+      };
+    }
+    case USER_LOGIN: {
+      return {
+        ...state,
         loggedIn: true,
       };
     }
@@ -249,6 +257,36 @@ export const userReducer: Reducer<TUserState> = (
         email: action.payload.email ?? state.email,
         name: action.payload.name ?? state.name,
         password: action.payload.password ?? state.password,
+      };
+    }
+    default:
+      return state;
+  }
+};
+
+type TResetPasswordState = {
+  email: string;
+};
+
+const resetPasswordInitialState: TResetPasswordState = {
+  email: "",
+};
+
+export const resetPasswordReducer: Reducer<TResetPasswordState> = (
+  state = resetPasswordInitialState,
+  action
+) => {
+  switch (action.type) {
+    case FORGOT_PASSWORD_SET_EMAIL: {
+      return {
+        ...state,
+        email: action.payload.email,
+      };
+    }
+    case RESET_PASSWORD: {
+      return {
+        ...state,
+        email: "",
       };
     }
     default:

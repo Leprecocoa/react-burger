@@ -92,3 +92,19 @@ export function setUserInfoApi(authToken: any, { name, email, password }: any) {
     body: JSON.stringify({ name, email, password }),
   }).then((res) => checkResponse(res));
 }
+
+export function forgotPasswordApi(email: string) {
+  return fetch(`${API_URL}/password-reset`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email }),
+  }).then((res) => checkResponse(res));
+}
+
+export function resetPasswordApi(password: string, resetToken: string) {
+  return fetch(`${API_URL}/password-reset/reset`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ password, token: resetToken }),
+  }).then((res) => checkResponse(res));
+}
