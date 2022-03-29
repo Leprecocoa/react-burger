@@ -22,8 +22,6 @@ export function IngredientCardLink({
       key={ingredient._id}
       to={{
         pathname: `/ingredients/${ingredient._id}`,
-        // This is the trick! This link sets
-        // the `background` in location state.
         state: { background: location },
       }}
       innerRef={innerRef}

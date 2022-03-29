@@ -1,17 +1,13 @@
-import { useCallback, useEffect } from "react";
+import { useCallback } from "react";
 import mainSectionStyles from "./main.module.css";
 import { OrderDetails } from "../order-details/order-details";
 import { Modal } from "../modal/modal";
 import BurgerIngredients from "../burger-ingredients/burger-ingredients";
 import BurgerConstructorDroppable from "../burger-constructor-droppable/burger-constructor-droppable";
-import {
-  DELETE_ORDER_DATA,
-  getIngredientsApi,
-  getOrderNumber,
-  SELECT_INGREDIENT,
-} from "../../services/actions";
 import { TIngredient, useAppDispatch, useAppSelector } from "../../utils/types";
 import { useHistory } from "react-router-dom";
+import { SELECT_INGREDIENT } from "../../services/actions/ingredients-actions";
+import { getOrderNumber, DELETE_ORDER_DATA } from "../../services/actions/order-actions";
 
 function Main() {
   const dispatch = useAppDispatch();
@@ -43,10 +39,6 @@ function Main() {
     },
     [dispatch]
   );
-
-  useEffect(() => {
-    dispatch(getIngredientsApi());
-  }, [dispatch]);
 
   const handleOrderDetailsOpen = useCallback(
     (ingredients) => {

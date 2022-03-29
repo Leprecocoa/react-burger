@@ -1,14 +1,16 @@
+import { useMemo } from "react";
 import { useCallback } from "react";
-import { useHistory } from "react-router-dom";
-import { DELETE_SELECTED_INGREDIENT_DATA } from "../../services/actions";
+import { useHistory, useParams } from "react-router-dom";
+import { DELETE_SELECTED_INGREDIENT_DATA } from "../../services/actions/ingredients-actions";
 import { useAppDispatch, useAppSelector } from "../../utils/types";
 import { IngredientDetails } from "../ingredient-details/ingredient-details";
 import { Modal } from "../modal/modal";
 
 export function IngredientDetailsModal() {
+  const { id } = useParams<{ id: string }>();
   const history = useHistory();
   const dispatch = useAppDispatch();
-  const { selectedIngredient } = useAppSelector(
+  const { selectedIngredient, ingredients } = useAppSelector(
     ({ ingredients: { ingredients, selectedIngredient } }) => {
       return {
         ingredients,
@@ -16,6 +18,12 @@ export function IngredientDetailsModal() {
       };
     }
   );
+  const ingredient = useMemo(() => {
+    if (selectedIngredient) {
+      return selectedIngredient;
+    }
+    return ingredients.find((ingredient) => ingredient._id === id);
+  }, [id, selectedIngredient, ingredients]);
   const handleIngredientDetailsClose = useCallback(() => {
     dispatch({
       type: DELETE_SELECTED_INGREDIENT_DATA,
@@ -24,13 +32,11 @@ export function IngredientDetailsModal() {
   }, [dispatch, history]);
   return (
     <Modal
-      isVisible={!!selectedIngredient}
+      isVisible={!!ingredient}
       onClose={handleIngredientDetailsClose}
       title="Детали ингредиента"
     >
-      {selectedIngredient && (
-        <IngredientDetails ingredient={selectedIngredient} />
-      )}
+      {ingredient && <IngredientDetails ingredient={ingredient} />}
     </Modal>
   );
 }

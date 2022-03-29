@@ -22,12 +22,16 @@ function Header() {
             Конструктор
           </span>
         </NavLink>
-        <button className={`${header.navLink} pl-5 pr-5 pt-4 pb-4`}>
+        <NavLink
+          to="/feed"
+          className={`${header.navLink} pl-5 pr-5 pt-4 pb-4`}
+          activeClassName={header.active_link}
+        >
           <ListIcon type="primary" />
           <span className={`text text_type_main-default ml-2`}>
             Лента заказов
           </span>
-        </button>
+        </NavLink>
       </nav>
       <Logo />
       <div className={header.auth}>

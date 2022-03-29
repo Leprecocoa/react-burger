@@ -7,60 +7,64 @@ import { Login } from "../../pages/login";
 import { ForgotPassword } from "../../pages/forgot-password";
 import { ResetPassword } from "../../pages/reset-password";
 import { Profile } from "../../pages/profile";
-import { useAppSelector } from "../../utils/types";
 import ProtectedRoute from "../protected-route/protected-route";
 import { IngredientDetailsPage } from "../ingredient-details/ingredient-details-page";
 import { IngredientDetailsModal } from "../ingredient-details-modal/ingredient-details-modal";
 import PublicRoute from "../public-route/public-route";
+import { Feed } from "../../pages/feed";
+import Header from "../header/header";
+import { useAppDispatch } from "../../utils/types";
+import { useEffect } from "react";
+import { getIngredientsApi } from "../../services/actions/ingredients-actions";
 
 export function AppRoutes() {
-  const { loggedIn } = useAppSelector((state) => {
-    return {
-      loggedIn: state.user.loggedIn,
-    };
-  });
-  let location = useLocation<{ background: Location }>();
+  const location = useLocation<{ background: Location }>();
+  const background = location.state && location.state.background;
+  const dispatch = useAppDispatch();
 
-  // This piece of state is set when one of the
-  // gallery links is clicked. The `background` state
-  // is the location that we were at when one of
-  // the gallery links was clicked. If it's there,
-  // use it as the location for the <Switch> so
-  // we show the gallery in the background, behind
-  // the modal.
-  let background = location.state && location.state.background;
+  useEffect(() => {
+    dispatch(getIngredientsApi());
+  }, [dispatch]);
   return (
     <div className={appstyles.page}>
+      <Header />
       <Switch location={background || location}>
         <Route exact path="/">
           <Constructor />
         </Route>
-        <PublicRoute
-          path="/register"
-          component={Register}
-          loggedIn={loggedIn}
-        />
-        <PublicRoute path="/login" component={Login} loggedIn={loggedIn} />
-        <PublicRoute
-          path="/forgot-password"
-          component={ForgotPassword}
-          loggedIn={loggedIn}
-        />
-        <PublicRoute
-          path="/reset-password"
-          component={ResetPassword}
-          loggedIn={loggedIn}
-        />
-        <ProtectedRoute
-          path="/profile"
-          loggedIn={loggedIn}
-          component={Profile}
-        />
-        <ProtectedRoute
-          loggedIn={loggedIn}
-          path="/ingredients/:id"
-          component={IngredientDetailsPage}
-        />
+        <PublicRoute path="/register">
+          <Register />
+        </PublicRoute>
+        <PublicRoute path="/login">
+          <Login />
+        </PublicRoute>
+        <PublicRoute path="/forgot-password">
+          <ForgotPassword />
+        </PublicRoute>
+        <PublicRoute path="/reset-password">
+          <ResetPassword />
+        </PublicRoute>
+        <ProtectedRoute path="/profile">
+          <Profile />
+        </ProtectedRoute>
+        <ProtectedRoute path="/ingredients/:id">
+          <IngredientDetailsPage />
+        </ProtectedRoute>
+        <ProtectedRoute path="/profile/orders">
+          <IngredientDetailsModal />
+        </ProtectedRoute>
+        <Route path="/feed" exact>
+          <Feed />
+        </Route>
+        <Route path="/feed/:id">
+          <div>feed id</div>
+        </Route>
+        <ProtectedRoute path="/profile/orders" exact>
+          <div>profile orders</div>
+        </ProtectedRoute>
+        <ProtectedRoute path="/profile/orders/:id">
+          <div>profile orders id</div>
+        </ProtectedRoute>
       </Switch>
       {/* Show the modal when a background page is set */}
       {background && (

@@ -1,22 +1,22 @@
-import { ComponentType } from "react";
-import { Route, Redirect } from "react-router-dom";
+import { Route, Redirect, RouteProps, useLocation } from "react-router-dom";
+import { useAppSelector } from "../../utils/types";
 
-function ProtectedRoute({
-  component: Component,
-  path,
-  loggedIn,
-  ...props
-}: {
-  loggedIn: boolean;
-  path: string;
-  component: ComponentType;
-}) {
+function ProtectedRoute(props: RouteProps) {
+  const { loggedIn } = useAppSelector((state) => ({
+    loggedIn: state.user.loggedIn,
+  }));
+  const location = useLocation();
   return (
-    <Route path={path}>
-      {() => {
-        return loggedIn ? <Component {...props} /> : <Redirect to="/login" />;
-      }}
-    </Route>
+    <Route
+      {...props}
+      children={
+        loggedIn ? (
+          props.children
+        ) : (
+          <Redirect to={{ pathname: "/login", state: { from: location } }} />
+        )
+      }
+    />
   );
 }
 

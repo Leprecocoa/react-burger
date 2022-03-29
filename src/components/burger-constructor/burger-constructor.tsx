@@ -6,8 +6,8 @@ import {
 import { useCallback, useMemo, forwardRef } from "react";
 import burgerConstructorStyles from "./burger-constructor.module.css";
 import { TIngredient, useAppDispatch, useAppSelector } from "../../utils/types";
-import { DELETE_IGREDIENT } from "../../services/actions";
 import BurgerConstructorItemDraggableDroppable from "../burger-constructor-item-draggable-droppable/burger-constructor-item-draggable-droppable";
+import { DELETE_IGREDIENT } from "../../services/actions/burger-constructor-actions";
 
 const BurgerConstructor = forwardRef<HTMLDivElement, IBurgerConstructorProps>(
   ({ onSubmit, ingredients }, ref) => {

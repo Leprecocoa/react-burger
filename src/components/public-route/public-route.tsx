@@ -1,22 +1,15 @@
-import { ComponentType } from "react";
-import { Route, Redirect } from "react-router-dom";
+import { Route, Redirect, RouteProps } from "react-router-dom";
+import { useAppSelector } from "../../utils/types";
 
-function PublicRoute({
-  component: Component,
-  path,
-  loggedIn,
-  ...props
-}: {
-  loggedIn: boolean;
-  path: string;
-  component: ComponentType;
-}) {
+function PublicRoute(props: RouteProps) {
+  const { loggedIn } = useAppSelector((state) => ({
+    loggedIn: state.user.loggedIn,
+  }));
   return (
-    <Route path={path}>
-      {() => {
-        return !loggedIn ? <Component {...props} /> : <Redirect to="/" />;
-      }}
-    </Route>
+    <Route
+      {...props}
+      children={!loggedIn ? props.children : <Redirect to="/login" />}
+    />
   );
 }
 
