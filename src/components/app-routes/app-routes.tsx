@@ -47,9 +47,9 @@ export function AppRoutes() {
         <ProtectedRoute path="/profile">
           <Profile />
         </ProtectedRoute>
-        <ProtectedRoute path="/ingredients/:id">
+        <Route path="/ingredients/:id">
           <IngredientDetailsPage />
-        </ProtectedRoute>
+        </Route>
         <ProtectedRoute path="/profile/orders">
           <IngredientDetailsModal />
         </ProtectedRoute>
