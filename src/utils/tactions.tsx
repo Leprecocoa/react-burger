@@ -31,6 +31,21 @@ import {
   SET_USER_INFO,
 } from "../services/actions/user-actions";
 import { TIngredient, TOrder, TSelectedIngredient } from "./types";
+import {
+  WS_CONNECTION_INIT,
+  WS_SEND_MESSAGE,
+  WS_CONNECTION_CLOSE,
+  FEED_WS_CONNECTION_CLOSED,
+  FEED_WS_CONNECTION_ERROR,
+  FEED_WS_CONNECTION_START,
+  FEED_WS_CONNECTION_SUCCESS,
+  FEED_WS_GET_MESSAGE,
+  PROFILE_FEED_WS_CONNECTION_CLOSED,
+  PROFILE_FEED_WS_CONNECTION_ERROR,
+  PROFILE_FEED_WS_CONNECTION_START,
+  PROFILE_FEED_WS_CONNECTION_SUCCESS,
+  PROFILE_FEED_WS_GET_MESSAGE,
+} from "../services/actions/ws-actions";
 
 export interface IGetIngredientsRequestAction {
   readonly type: typeof GET_INGREDIENTS_REQUEST;
@@ -128,6 +143,74 @@ export interface IResetPassword {
   readonly type: typeof RESET_PASSWORD;
 }
 
+export interface IWsConnectionInitAction {
+  readonly type: typeof WS_CONNECTION_INIT;
+  readonly payload: {
+    wsUrl: string;
+    id: string;
+    actions: {
+      start:
+        | typeof FEED_WS_CONNECTION_START
+        | typeof PROFILE_FEED_WS_CONNECTION_START;
+      open:
+        | typeof FEED_WS_CONNECTION_SUCCESS
+        | typeof PROFILE_FEED_WS_CONNECTION_SUCCESS;
+      error:
+        | typeof FEED_WS_CONNECTION_ERROR
+        | typeof PROFILE_FEED_WS_CONNECTION_ERROR;
+      message: typeof FEED_WS_GET_MESSAGE | typeof PROFILE_FEED_WS_GET_MESSAGE;
+      close:
+        | typeof FEED_WS_CONNECTION_CLOSED
+        | typeof PROFILE_FEED_WS_CONNECTION_CLOSED;
+    };
+  };
+}
+export interface IWsSendMessage {
+  readonly type: typeof WS_SEND_MESSAGE;
+  readonly payload: {
+    id: string;
+    message: object;
+  };
+}
+export interface IWsConnectionClose {
+  readonly type: typeof WS_CONNECTION_CLOSE;
+  readonly payload: {
+    id: string;
+  };
+}
+export interface IFeedWsConnectionStart {
+  readonly type: typeof FEED_WS_CONNECTION_START;
+}
+export interface IFeedWsConnectionSuccess {
+  readonly type: typeof FEED_WS_CONNECTION_SUCCESS;
+}
+export interface IFeedWsConnectionError {
+  readonly type: typeof FEED_WS_CONNECTION_ERROR;
+}
+export interface IFeedWsConnectionClosed {
+  readonly type: typeof FEED_WS_CONNECTION_CLOSED;
+}
+export interface IFeedWsGetMessage {
+  readonly type: typeof FEED_WS_GET_MESSAGE;
+  readonly payload: { data: any };
+}
+export interface IProfileFeedWsConnectionStart {
+  readonly type: typeof PROFILE_FEED_WS_CONNECTION_START;
+}
+export interface IProfileFeedWsConnectionSuccess {
+  readonly type: typeof PROFILE_FEED_WS_CONNECTION_SUCCESS;
+}
+export interface IProfileFeedWsConnectionError {
+  readonly type: typeof PROFILE_FEED_WS_CONNECTION_ERROR;
+}
+export interface IProfileFeedWsConnectionClosed {
+  readonly type: typeof PROFILE_FEED_WS_CONNECTION_CLOSED;
+}
+export interface IProfileFeedWsGetMessage {
+  readonly type: typeof PROFILE_FEED_WS_GET_MESSAGE;
+  readonly payload: { data: any };
+}
+
 export type TActions =
   | IGetIngredientsRequestAction
   | IGetIngredientsSuccessAction
@@ -150,4 +233,17 @@ export type TActions =
   | IGetUserInfo
   | ISetUserInfo
   | IForgotPasswordSetEmail
-  | IResetPassword;
+  | IResetPassword
+  | IWsConnectionInitAction
+  | IWsSendMessage
+  | IWsConnectionClose
+  | IFeedWsConnectionStart
+  | IFeedWsConnectionSuccess
+  | IFeedWsConnectionError
+  | IFeedWsConnectionClosed
+  | IFeedWsGetMessage
+  | IProfileFeedWsConnectionStart
+  | IProfileFeedWsConnectionSuccess
+  | IProfileFeedWsConnectionError
+  | IProfileFeedWsConnectionClosed
+  | IProfileFeedWsGetMessage;

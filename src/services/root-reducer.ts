@@ -4,6 +4,8 @@ import { ingredientsReducer } from "./reducers/ingredients-reducer";
 import { orderReducer } from "./reducers/order-reducer";
 import { resetPasswordReducer } from "./reducers/reset-password-reducer";
 import { userReducer } from "./reducers/user-reducer";
+import { feedReducer } from "./reducers/feed-reducer";
+import { profileFeedReducer } from "./reducers/profile-feed-reducer";
 
 export const rootReducer = combineReducers({
   order: orderReducer,
@@ -11,4 +13,6 @@ export const rootReducer = combineReducers({
   burgerConstructor: burgerConstructorReducer,
   user: userReducer,
   resetPassword: resetPasswordReducer,
+  feed: feedReducer,
+  profileFeed: profileFeedReducer,
 });

@@ -22,6 +22,12 @@ export type TSelectedIngredient = TIngredient & { uid: string };
 
 export type TOrder = {
   number: number;
+  _id: string;
+  status: "created" | "pending" | "done";
+  name: string;
+  createdAt: string;
+  updatedAt: string;
+  ingredients: string[]
 };
 
 export type RootState = ReturnType<typeof store.getState>;

@@ -14,11 +14,12 @@ export function getIngredients() {
   );
 }
 
-export function sendOrder(ingredientIds: number[]) {
+export function sendOrder(authToken: string, ingredientIds: number[]) {
   return fetch(`${API_URL}/orders`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      Authorization: `Bearer ${authToken}`,
     },
     body: JSON.stringify({
       ingredients: ingredientIds,

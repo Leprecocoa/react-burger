@@ -7,7 +7,7 @@ import {
   setUserInfoApi,
 } from "../../utils/api";
 import { AppThunk, AppDispatch } from "../../utils/types";
-import { setCookie } from "../../utils/utils";
+import { getCookie, setCookie } from "../../utils/utils";
 import { History, LocationState } from "history";
 
 export const USER_REGISTER: "USER_REGISTER" = "USER_REGISTER";
@@ -85,10 +85,11 @@ export const logoutUser: (
   };
 };
 
-export const getUserInfo: (authToken: string | undefined) => AppThunk = (
-  authToken
+export const getUserInfo: (retryWhenExpired?: boolean) => AppThunk = (
+  retryWhenExpired = true
 ) => {
   return (dispatch: AppDispatch) => {
+    const authToken = getCookie("authToken");
     if (authToken == null) {
       return;
     }
@@ -104,20 +105,11 @@ export const getUserInfo: (authToken: string | undefined) => AppThunk = (
         });
       })
       .catch((err) => {
-        console.log(err);
-        if (err.data.message === "jwt expired") {
-          const refreshingToken = localStorage.getItem("refreshToken");
-          if (refreshingToken == null) {
-            return;
-          }
-          refreshToken(refreshingToken)
-            .then((res) => {
-              console.log("refreshToken", res);
-              let authToken = res.accessToken.split("Bearer ")[1];
-              if (authToken && res.refreshToken) {
-                setCookie("authToken", authToken);
-                localStorage.setItem("refreshToken", res.refreshToken);
-              }
+        console.error(err);
+        if (err.data.message === "jwt expired" && retryWhenExpired) {
+          dispatch(actionRefreshToken())
+            .then(() => {
+              dispatch(getUserInfo(false));
             })
             .catch((err) => console.log(err));
         }
@@ -126,12 +118,13 @@ export const getUserInfo: (authToken: string | undefined) => AppThunk = (
 };
 
 export const setUserInfo: (
-  authToken: string | undefined,
   name: string,
   email: string,
-  password: string
-) => AppThunk = (authToken, name, email, password) => {
+  password: string,
+  retryWhenExpired?: boolean
+) => AppThunk = (name, email, password, retryWhenExpired = true) => {
   return (dispatch: AppDispatch) => {
+    const authToken = getCookie("authToken");
     if (authToken == null) {
       return;
     }
@@ -148,23 +141,34 @@ export const setUserInfo: (
         });
       })
       .catch((err) => {
-        console.log(err);
-        if (err.data.message === "jwt expired") {
-          const refreshingToken = localStorage.getItem("refreshToken");
-          if (refreshingToken == null) {
-            return;
-          }
-          refreshToken(refreshingToken)
-            .then((res) => {
-              console.log("refreshToken", res);
-              let authToken = res.accessToken.split("Bearer ")[1];
-              if (authToken && res.refreshToken) {
-                setCookie("authToken", authToken);
-                localStorage.setItem("refreshToken", res.refreshToken);
-              }
+        console.error(err);
+        if (err.data.message === "jwt expired" && retryWhenExpired) {
+          dispatch(actionRefreshToken())
+            .then(() => {
+              dispatch(setUserInfo(name, email, password, false));
             })
-            .catch((err) => console.log(err));
+            .catch(console.error);
         }
       });
+  };
+};
+
+export const actionRefreshToken: () => AppThunk<Promise<void>> = () => {
+  return async () => {
+    const refreshingToken = localStorage.getItem("refreshToken");
+    if (refreshingToken == null) {
+      return;
+    }
+    await refreshToken(refreshingToken)
+      .then((res) => {
+        console.log("refreshToken", res);
+        let authToken = res.accessToken.split("Bearer ")[1];
+        if (authToken && res.refreshToken) {
+          setCookie("authToken", authToken);
+          localStorage.setItem("refreshToken", res.refreshToken);
+          console.log("token refreshed");
+        }
+      })
+      .catch((err) => console.log(err));
   };
 };

@@ -11,11 +11,16 @@ import ProtectedRoute from "../protected-route/protected-route";
 import { IngredientDetailsPage } from "../ingredient-details/ingredient-details-page";
 import { IngredientDetailsModal } from "../ingredient-details-modal/ingredient-details-modal";
 import PublicRoute from "../public-route/public-route";
-import { Feed } from "../../pages/feed";
 import Header from "../header/header";
 import { useAppDispatch } from "../../utils/types";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { getIngredientsApi } from "../../services/actions/ingredients-actions";
+import { FeedDetails } from "../../pages/feed-details";
+import { ProfileFeedDetails } from "../../pages/profile-feed-details";
+import { FeedDetailsModal } from "../feed-details-modal/feed-details-modal";
+import { ProfileFeedDetailsModal } from "../profile-feed-details-modal/profile-feed-details-modal";
+import { Feed } from "../../pages/feed";
+import { ProfileFeed } from "../../pages/profile-feed";
 
 export function AppRoutes() {
   const location = useLocation<{ background: Location }>();
@@ -44,31 +49,37 @@ export function AppRoutes() {
         <PublicRoute path="/reset-password">
           <ResetPassword />
         </PublicRoute>
-        <ProtectedRoute path="/profile">
-          <Profile />
-        </ProtectedRoute>
-        <ProtectedRoute path="/ingredients/:id">
+        <Route path="/ingredients/:id">
           <IngredientDetailsPage />
-        </ProtectedRoute>
-        <ProtectedRoute path="/profile/orders">
-          <IngredientDetailsModal />
-        </ProtectedRoute>
+        </Route>
         <Route path="/feed" exact>
           <Feed />
         </Route>
         <Route path="/feed/:id">
-          <div>feed id</div>
+          <FeedDetails />
         </Route>
+        <ProtectedRoute path="/profile" exact>
+          <Profile />
+        </ProtectedRoute>
         <ProtectedRoute path="/profile/orders" exact>
-          <div>profile orders</div>
+          <ProfileFeed />
         </ProtectedRoute>
         <ProtectedRoute path="/profile/orders/:id">
-          <div>profile orders id</div>
+          <ProfileFeedDetails />
         </ProtectedRoute>
       </Switch>
       {/* Show the modal when a background page is set */}
       {background && (
-        <Route path="/ingredients/:id" children={<IngredientDetailsModal />} />
+        <React.Fragment>
+          <Route
+            path="/ingredients/:id"
+            children={<IngredientDetailsModal />}
+          />
+          <Route path="/feed/:id" children={<FeedDetailsModal />} />
+          <ProtectedRoute path="/profile/orders/:id">
+            <ProfileFeedDetailsModal />
+          </ProtectedRoute>
+        </React.Fragment>
       )}
     </div>
   );

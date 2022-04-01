@@ -1,5 +1,6 @@
 import { sendOrder } from "../../utils/api";
 import { AppThunk, AppDispatch } from "../../utils/types";
+import { getCookie } from "../../utils/utils";
 import { GET_ORDER_NUMBER_SUCCESS } from "./burger-constructor-actions";
 
 export const DELETE_ORDER_DATA: "DELETE_ORDER_DATA" = "DELETE_ORDER_DATA";
@@ -12,10 +13,14 @@ export const getOrderNumber: (ingredientIds: number[]) => AppThunk = (
   ingredientIds
 ) => {
   return (dispatch: AppDispatch) => {
+    const token = getCookie("authToken");
+    if (!token) {
+      return;
+    }
     dispatch({
       type: GET_ORDER_NUMBER_REQUEST,
     });
-    sendOrder(ingredientIds)
+    sendOrder(token, ingredientIds)
       .then((res) => {
         if (res && res.success) {
           dispatch({

@@ -4,9 +4,12 @@ import {
 } from "@ya.praktikum/react-developer-burger-ui-components";
 import { useCallback, useEffect, useState } from "react";
 import { NavLink, useHistory } from "react-router-dom";
-import { getUserInfo, setUserInfo, logoutUser } from "../services/actions/user-actions";
+import {
+  getUserInfo,
+  setUserInfo,
+  logoutUser,
+} from "../services/actions/user-actions";
 import { useAppDispatch, useAppSelector } from "../utils/types";
-import { getCookie } from "../utils/utils";
 import styles from "./profile.module.css";
 
 export const Profile = () => {
@@ -27,7 +30,7 @@ export const Profile = () => {
   const history = useHistory();
 
   useEffect(() => {
-    dispatch(getUserInfo(getCookie("authToken")));
+    dispatch(getUserInfo());
   }, [dispatch]);
 
   useEffect(() => {
@@ -50,7 +53,6 @@ export const Profile = () => {
       evt.preventDefault();
       dispatch(
         setUserInfo(
-          getCookie("authToken"),
           formvalue.username,
           formvalue.useremail,
           formvalue.userpassword
@@ -84,7 +86,7 @@ export const Profile = () => {
           Профиль
         </NavLink>
         <NavLink
-          to="/"
+          to="/profile/orders"
           className={`${styles.navlink} text text_type_main-medium text_color_inactive mb-6`}
         >
           История заказов
