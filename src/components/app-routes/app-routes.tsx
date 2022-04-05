@@ -1,5 +1,5 @@
 import appstyles from "../app/app.module.css";
-import { Route, Switch, useLocation } from "react-router-dom";
+import { Route, Switch, useHistory, useLocation } from "react-router-dom";
 import { Location } from "history";
 import { Constructor } from "../../pages/constructor";
 import { Register } from "../../pages/register";
@@ -21,15 +21,23 @@ import { FeedDetailsModal } from "../feed-details-modal/feed-details-modal";
 import { ProfileFeedDetailsModal } from "../profile-feed-details-modal/profile-feed-details-modal";
 import { Feed } from "../../pages/feed";
 import { ProfileFeed } from "../../pages/profile-feed";
+import { Test } from "../../pages/test";
+import { getUserInfo } from "../../services/actions/user-actions";
 
 export function AppRoutes() {
   const location = useLocation<{ background: Location }>();
   const background = location.state && location.state.background;
   const dispatch = useAppDispatch();
+  const history = useHistory();
 
   useEffect(() => {
     dispatch(getIngredientsApi());
   }, [dispatch]);
+
+  useEffect(() => {
+    dispatch(getUserInfo(history));
+  }, [dispatch, history]);
+
   return (
     <div className={appstyles.page}>
       <Header />
@@ -67,8 +75,11 @@ export function AppRoutes() {
         <ProtectedRoute path="/profile/orders/:id">
           <ProfileFeedDetails />
         </ProtectedRoute>
+        <Route>
+          <Test />
+        </Route>
       </Switch>
-      {/* Show the modal when a background page is set */}
+
       {background && (
         <React.Fragment>
           <Route

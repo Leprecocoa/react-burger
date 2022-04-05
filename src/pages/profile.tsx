@@ -30,8 +30,8 @@ export const Profile = () => {
   const history = useHistory();
 
   useEffect(() => {
-    dispatch(getUserInfo());
-  }, [dispatch]);
+    dispatch(getUserInfo(history));
+  }, [dispatch, history]);
 
   useEffect(() => {
     setFormvalue((prevstate) => ({
@@ -55,11 +55,12 @@ export const Profile = () => {
         setUserInfo(
           formvalue.username,
           formvalue.useremail,
-          formvalue.userpassword
+          formvalue.userpassword,
+          history
         )
       );
     },
-    [dispatch, formvalue]
+    [dispatch, formvalue, history]
   );
 
   const handleCancel = () => {
@@ -94,10 +95,7 @@ export const Profile = () => {
         <button
           className={`${styles.logout} text text_type_main-medium text_color_inactive mb-6`}
           onClick={() => {
-            if (localStorage.getItem("refreshToken") == null) {
-              return;
-            }
-            dispatch(logoutUser(localStorage.getItem("refreshToken"), history));
+            dispatch(logoutUser(history));
           }}
         >
           Выход

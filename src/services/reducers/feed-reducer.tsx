@@ -6,11 +6,14 @@ import {
   FEED_WS_GET_MESSAGE,
 } from "../actions/ws-actions";
 import { TOrder } from "../../utils/types";
+import { TActions } from "../../utils/tactions"
 
 type TFeedState = {
   isLoading: boolean;
   isError: boolean;
   orders: TOrder[];
+  total?: number;
+  totalToday?: number;
 };
 
 const feedInitialState: TFeedState = {
@@ -19,7 +22,7 @@ const feedInitialState: TFeedState = {
   orders: [],
 };
 
-export const feedReducer: Reducer<TFeedState> = (
+export const feedReducer: Reducer<TFeedState, TActions> = (
   state = feedInitialState,
   action
 ) => {
@@ -31,8 +34,8 @@ export const feedReducer: Reducer<TFeedState> = (
     case FEED_WS_CONNECTION_SUCCESS:
       return { ...state, isError: false };
     case FEED_WS_GET_MESSAGE:
-      const data = JSON.parse(action.payload.data);
-      return { ...state, orders: data.orders, isLoading: false };
+      const { orders, total, totalToday } = action.payload.data;
+      return { ...state, orders, total, totalToday, isLoading: false };
     default:
       return state;
   }

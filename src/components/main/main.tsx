@@ -1,13 +1,16 @@
 import { useCallback } from "react";
 import mainSectionStyles from "./main.module.css";
-import { OrderDetails } from "../order-details/order-details";
 import { Modal } from "../modal/modal";
 import BurgerIngredients from "../burger-ingredients/burger-ingredients";
 import BurgerConstructorDroppable from "../burger-constructor-droppable/burger-constructor-droppable";
 import { TIngredient, useAppDispatch, useAppSelector } from "../../utils/types";
 import { useHistory } from "react-router-dom";
 import { SELECT_INGREDIENT } from "../../services/actions/ingredients-actions";
-import { getOrderNumber, DELETE_ORDER_DATA } from "../../services/actions/order-actions";
+import {
+  getOrderNumber,
+  DELETE_ORDER_DATA,
+} from "../../services/actions/order-actions";
+import { OrderDetailsModal } from "../order-details-modal/order-details-modal";
 
 function Main() {
   const dispatch = useAppDispatch();
@@ -69,7 +72,7 @@ function Main() {
       <BurgerConstructorDroppable onSubmit={handleOrderDetailsOpen} />
 
       <Modal isVisible={!!order} onClose={handleOrderDetailsClose}>
-        {order ? <OrderDetails order={order} /> : null}
+        {order ? <OrderDetailsModal order={order} /> : null}
       </Modal>
     </main>
   );

@@ -5,17 +5,13 @@ import { Modal } from "../modal/modal";
 import { OrderInfo } from "../order-info/order-info";
 
 export function FeedDetailsModal() {
-  const { id } = useParams<{ id: string }>();
   const history = useHistory();
-
-  const { isLoading, isError, order } = useAppSelector(
-    ({ feed: { orders, isLoading, isError } }) => ({
-      order: orders.find((order) => order._id === id),
-      isLoading,
-      isError,
-    })
+  const { id } = useParams<{ id: string }>();
+  const { order, isLoading, isError } = useAppSelector(
+    ({
+      feed: { orders, isLoading, isError },
+    }) => ({ order: orders.find(order => order._id === id), isLoading, isError })
   );
-
   const handleFeedDetailsClose = useCallback(() => {
     history.goBack();
   }, [history]);

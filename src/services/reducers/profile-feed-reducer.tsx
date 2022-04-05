@@ -6,6 +6,7 @@ import {
   PROFILE_FEED_WS_GET_MESSAGE,
 } from "../actions/ws-actions";
 import { TOrder } from "../../utils/types";
+import { TActions } from "../../utils/tactions"
 
 type TProfileFeedState = {
   isLoading: boolean;
@@ -19,7 +20,7 @@ const feedInitialState: TProfileFeedState = {
   orders: [],
 };
 
-export const profileFeedReducer: Reducer<TProfileFeedState> = (
+export const profileFeedReducer: Reducer<TProfileFeedState, TActions> = (
   state = feedInitialState,
   action
 ) => {
@@ -31,8 +32,8 @@ export const profileFeedReducer: Reducer<TProfileFeedState> = (
     case PROFILE_FEED_WS_CONNECTION_SUCCESS:
       return { ...state, isError: false };
     case PROFILE_FEED_WS_GET_MESSAGE:
-      const data = JSON.parse(action.payload.data);
-      return { ...state, orders: data.orders, isLoading: false };
+      const { orders } = action.payload.data;
+      return { ...state, orders, isLoading: false };
     default:
       return state;
   }

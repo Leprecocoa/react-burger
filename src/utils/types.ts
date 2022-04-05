@@ -27,7 +27,7 @@ export type TOrder = {
   name: string;
   createdAt: string;
   updatedAt: string;
-  ingredients: string[]
+  ingredients: string[];
 };
 
 export type RootState = ReturnType<typeof store.getState>;
@@ -43,3 +43,11 @@ export type AppThunk<ReturnType = void> = ThunkAction<
   unknown,
   TActions
 >;
+
+export type TFeedWsResponse = {
+  success: boolean;
+  total: number;
+  totalToday: number;
+  orders: TOrder[];
+  message?: string;
+};

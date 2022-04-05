@@ -30,7 +30,12 @@ import {
   GET_USER_INFO,
   SET_USER_INFO,
 } from "../services/actions/user-actions";
-import { TIngredient, TOrder, TSelectedIngredient } from "./types";
+import {
+  TIngredient,
+  TOrder,
+  TSelectedIngredient,
+  TFeedWsResponse,
+} from "./types";
 import {
   WS_CONNECTION_INIT,
   WS_SEND_MESSAGE,
@@ -192,7 +197,7 @@ export interface IFeedWsConnectionClosed {
 }
 export interface IFeedWsGetMessage {
   readonly type: typeof FEED_WS_GET_MESSAGE;
-  readonly payload: { data: any };
+  readonly payload: { data: TFeedWsResponse };
 }
 export interface IProfileFeedWsConnectionStart {
   readonly type: typeof PROFILE_FEED_WS_CONNECTION_START;
@@ -208,7 +213,7 @@ export interface IProfileFeedWsConnectionClosed {
 }
 export interface IProfileFeedWsGetMessage {
   readonly type: typeof PROFILE_FEED_WS_GET_MESSAGE;
-  readonly payload: { data: any };
+  readonly payload: { data: TFeedWsResponse };
 }
 
 export type TActions =

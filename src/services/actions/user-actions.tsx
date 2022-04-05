@@ -23,14 +23,15 @@ export const registerUser: (
   password: string,
   name: string,
   history: History<LocationState>
-) => AppThunk = (email, password, name, history) => {
-  return () => {
-    register({ email, password, name })
-      .then((res) => {
-        console.log("registerUser", res);
-        history.push("/login");
-      })
-      .catch((err) => console.log(err));
+) => AppThunk<Promise<void>> = (email, password, name, history) => {
+  return async () => {
+    try {
+      const res = await register({ email, password, name });
+      console.log("registerUser", res);
+      history.push("/login");
+    } catch (err) {
+      console.error(err);
+    }
   };
 };
 
@@ -38,82 +39,92 @@ export const loginUser: (
   email: string,
   password: string,
   history: History<LocationState>
-) => AppThunk = (email, password, history) => {
-  return (dispatch: AppDispatch) => {
-    login({ email, password })
-      .then((res) => {
-        console.log("loginUser", res);
-        if (res.accessToken == null) {
-          return;
-        }
-        let authToken = res.accessToken.split("Bearer ")[1];
-        if (authToken && res.refreshToken) {
-          setCookie("authToken", authToken);
-          localStorage.setItem("refreshToken", res.refreshToken);
-        }
-        if (res.success) {
-          dispatch({ type: USER_LOGIN });
-          history.push("/");
-        }
-      })
-      .catch((err) => console.log(err));
+) => AppThunk<Promise<void>> = (email, password, history) => {
+  return async (dispatch: AppDispatch) => {
+    try {
+      const res = await login({ email, password });
+      if (res.accessToken == null) {
+        return;
+      }
+      let authToken = res.accessToken.split("Bearer ")[1];
+      if (authToken && res.refreshToken) {
+        setCookie("authToken", authToken);
+        localStorage.setItem("refreshToken", res.refreshToken);
+      }
+      if (res.success) {
+        dispatch({ type: USER_LOGIN });
+        history.push("/");
+      }
+    } catch (err) {
+      console.error(err);
+    }
   };
 };
 
 export const logoutUser: (
-  refreshToken: string | null,
   history: History<LocationState>
-) => AppThunk = (refreshToken, history) => {
-  return (dispatch: AppDispatch) => {
-    if (refreshToken == null) {
-      return;
-    }
-    logout(refreshToken)
-      .then((res) => {
-        console.log("logoutUser", res);
-        if (res.success) {
-          localStorage.removeItem("refreshToken");
-        }
-      })
-      .then((res) => {
+) => AppThunk<Promise<void>> = (history) => {
+  return async (dispatch: AppDispatch) => {
+    try {
+      const refreshToken = localStorage.getItem("refreshToken");
+      if (refreshToken == null) {
         dispatch({
           type: USER_LOGOUT,
         });
         history.push("/login");
-      })
-      .catch((err) => console.log(err));
+        return;
+      }
+      const res = await logout(refreshToken);
+      console.log("logoutUser", res);
+      if (res.success) {
+        localStorage.removeItem("refreshToken");
+        dispatch({
+          type: USER_LOGOUT,
+        });
+        history.push("/login");
+      }
+    } catch (err) {
+      console.error(err);
+    }
   };
 };
 
-export const getUserInfo: (retryWhenExpired?: boolean) => AppThunk = (
-  retryWhenExpired = true
-) => {
-  return (dispatch: AppDispatch) => {
-    const authToken = getCookie("authToken");
-    if (authToken == null) {
-      return;
-    }
-    getUserInfoApi(authToken)
-      .then((res) => {
-        console.log("getUserInfoApi", res);
-        dispatch({
-          type: GET_USER_INFO,
-          payload: {
-            name: res.user.name,
-            email: res.user.email,
-          },
-        });
-      })
-      .catch((err) => {
-        console.error(err);
-        if (err.data.message === "jwt expired" && retryWhenExpired) {
-          dispatch(actionRefreshToken())
-            .then(() => {
-              dispatch(getUserInfo(false));
-            })
-            .catch((err) => console.log(err));
-        }
+export const getUserInfo: (
+  history: History<LocationState>,
+  retry?: boolean
+) => AppThunk<Promise<void>> = (history, retry = true) => {
+  return async (dispatch: AppDispatch) => {
+    try {
+      let authToken = getCookie("authToken");
+      if (authToken == null && retry) {
+        await dispatch(actionRefreshToken());
+        await dispatch(getUserInfo(history, false));
+        return;
+      }
+      if (authToken == null) {
+        await dispatch(logoutUser(history));
+        return;
+      }
+      const res = await getUserInfoApi(authToken);
+      console.log("getUserInfoApi", res);
+      dispatch({
+        type: GET_USER_INFO,
+        payload: {
+          name: res.user.name,
+          email: res.user.email,
+        },
       });
+    } catch (err: any) {
+      console.error(err);
+      if (err.data.message === "jwt expired" && retry) {
+        try {
+          await dispatch(actionRefreshToken());
+          await dispatch(getUserInfo(history, false));
+        } catch (err) {
+          console.error(err);
+        }
+      }
+    }
   };
 };
 
@@ -121,54 +132,63 @@ export const setUserInfo: (
   name: string,
   email: string,
   password: string,
-  retryWhenExpired?: boolean
-) => AppThunk = (name, email, password, retryWhenExpired = true) => {
-  return (dispatch: AppDispatch) => {
-    const authToken = getCookie("authToken");
-    if (authToken == null) {
-      return;
-    }
-    setUserInfoApi(authToken, { name, email, password })
-      .then((res) => {
-        console.log("setUserInfoApi", res);
-        dispatch({
-          type: SET_USER_INFO,
-          payload: {
-            name: res.user.name,
-            email: res.user.email,
-            password: res.user.password,
-          },
-        });
-      })
-      .catch((err) => {
-        console.error(err);
-        if (err.data.message === "jwt expired" && retryWhenExpired) {
-          dispatch(actionRefreshToken())
-            .then(() => {
-              dispatch(setUserInfo(name, email, password, false));
-            })
-            .catch(console.error);
-        }
+  history: History<LocationState>,
+  retry?: boolean
+) => AppThunk<Promise<void>> = (name, email, password, history, retry = true) => {
+  return async (dispatch: AppDispatch) => {
+    try {
+      let authToken = getCookie("authToken");
+
+      if (authToken == null && retry) {
+        await dispatch(actionRefreshToken());
+        await dispatch(setUserInfo(name, email, password, history, false));
+        return;
+      }
+
+      if (authToken == null) {
+        await dispatch(logoutUser(history));
+        return;
+      }
+
+      const res = await setUserInfoApi(authToken, { name, email, password });
+      console.log("setUserInfoApi", res);
+      dispatch({
+        type: SET_USER_INFO,
+        payload: {
+          name: res.user.name,
+          email: res.user.email,
+          password: res.user.password,
+        },
       });
+    } catch (err: any) {
+      console.error(err);
+      if (err.data.message === "jwt expired" && retry) {
+        try {
+          await dispatch(actionRefreshToken());
+          await dispatch(setUserInfo(name, email, password, history, false));
+        } catch (err) {
+          console.error("err");
+        }
+      }
+    }
   };
 };
 
 export const actionRefreshToken: () => AppThunk<Promise<void>> = () => {
   return async () => {
-    const refreshingToken = localStorage.getItem("refreshToken");
-    if (refreshingToken == null) {
-      return;
+    try {
+      const refreshingToken = localStorage.getItem("refreshToken");
+      if (refreshingToken == null) {
+        return;
+      }
+      const res = await refreshToken(refreshingToken);
+      let authToken = res.accessToken.split("Bearer ")[1];
+      if (authToken && res.refreshToken) {
+        setCookie("authToken", authToken);
+        localStorage.setItem("refreshToken", res.refreshToken);
+      }
+    } catch (err) {
+      console.error(err);
     }
-    await refreshToken(refreshingToken)
-      .then((res) => {
-        console.log("refreshToken", res);
-        let authToken = res.accessToken.split("Bearer ")[1];
-        if (authToken && res.refreshToken) {
-          setCookie("authToken", authToken);
-          localStorage.setItem("refreshToken", res.refreshToken);
-          console.log("token refreshed");
-        }
-      })
-      .catch((err) => console.log(err));
   };
 };

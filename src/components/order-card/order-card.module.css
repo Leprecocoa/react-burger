@@ -1,0 +1,42 @@
+.order_card {
+  width: calc(50% - 30px);
+  box-sizing: border-box;
+  border-radius: 40px;
+  background: #1c1c21;
+}
+
+.order_number {
+  display: flex;
+  justify-content: space-between;
+}
+
+.order_ingredients {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.order_ingredients_images {
+  display: flex;
+}
+
+.order_images_border {
+  display: flex;
+  width: 64px;
+  height: 64px;
+  border: 2px solid #4c4cff;
+  border-radius: 50%;
+  background: #131316;
+}
+
+.order_images_border:not(:first-of-type) {
+  margin-left: -15px;
+}
+
+.order_ingredient_image {
+  max-width: 100%;
+}
+
+.order_icon {
+  vertical-align: middle;
+}

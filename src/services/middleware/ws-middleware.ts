@@ -5,6 +5,7 @@ import {
   WS_CONNECTION_CLOSE,
 } from "../actions/ws-actions";
 import { TActions } from "../../utils/tactions";
+import { TFeedWsResponse } from "../../utils/types";
 
 export const socketMiddleware: () => Middleware<
   {},
@@ -71,13 +72,24 @@ export const socketMiddleware: () => Middleware<
         };
 
         // функция, которая вызывается при получении события от сервера
-        socket.onmessage = (event) => {
-          console.log("wsMiddleware", "message event", { id, event });
-          const { data } = event;
-          dispatch({
-            type: actions.message,
-            payload: { data },
-          });
+        socket.onmessage = (event: MessageEvent<string>) => {
+          const data = JSON.parse(event.data) as TFeedWsResponse;
+          console.log("wsMiddleware", "message event", { data });
+          if (!data.success) {
+            dispatch({
+              type: actions.error,
+            });
+            if (connections[id]) {
+              connections[id].socket.close();
+              delete connections[id];
+              console.log("wsMiddleware", "connection deleted", { id });
+            }
+          } else {
+            dispatch({
+              type: actions.message,
+              payload: { data },
+            });
+          }
         };
 
         // функция, которая вызывается при закрытии соединения
