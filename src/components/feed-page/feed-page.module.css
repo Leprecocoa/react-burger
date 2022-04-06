@@ -1,0 +1,24 @@
+.feed_page_grid {
+  display: grid;
+  grid-template-columns: 50% 50%;
+  grid-column-gap: 60px;
+}
+
+.feed_item_link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.order_list {
+  max-height: 100vh;
+  overflow: auto;
+}
+
+.order_list > * {
+  margin-bottom: 1rem;
+}
+
+.order_list > *:last-child {
+  margin-bottom: none;
+}

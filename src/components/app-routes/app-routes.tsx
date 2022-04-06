@@ -34,9 +34,6 @@ export function AppRoutes() {
     dispatch(getIngredientsApi());
   }, [dispatch]);
 
-  useEffect(() => {
-    dispatch(getUserInfo(history));
-  }, [dispatch, history]);
 
   return (
     <div className={appstyles.page}>

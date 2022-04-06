@@ -30,10 +30,6 @@ export const Profile = () => {
   const history = useHistory();
 
   useEffect(() => {
-    dispatch(getUserInfo(history));
-  }, [dispatch, history]);
-
-  useEffect(() => {
     setFormvalue((prevstate) => ({
       ...prevstate,
       username: name || "",

@@ -1,7 +1,10 @@
+import { useMemo } from "react";
 import { useLocation, Link } from "react-router-dom";
 import { useWsFeed } from "../../services/hooks/useWsFeed";
 import { useAppSelector } from "../../utils/types";
-import { OrderStatus } from "../order-status/order-status";
+import { OrderCard } from "../order-card/order-card";
+import { OrderNumberFeed } from "../order-number-feed/order-number-feed";
+import styles from "./feed-page.module.css";
 
 export function FeedPage() {
   useWsFeed();
@@ -9,69 +12,43 @@ export function FeedPage() {
     ({ feed: { orders, total, totalToday } }) => ({ orders, total, totalToday })
   );
   let location = useLocation();
+  const readyNumbers = useMemo(
+    () =>
+      orders
+        .filter((order) => order.status === "done")
+        .slice(0, 6)
+        .map((order) => order.number),
+    [orders]
+  );
+  const inProgressNumbers = useMemo(
+    () =>
+      orders
+        .filter((order) => order.status !== "done")
+        .slice(0, 6)
+        .map((order) => order.number),
+    [orders]
+  );
   return (
     <div>
       <h1>Лента заказов</h1>
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "50% 50%",
-          gridGap: "1rem",
-        }}
-      >
-        <div>
-          {orders.map(({ _id, name, number, status }) => (
+      <div className={styles.feed_page_grid}>
+        <div className={styles.order_list}>
+          {orders.map(({ _id }) => (
             <Link
               key={_id}
               to={{ pathname: `/feed/${_id}`, state: { background: location } }}
+              className={styles.feed_item_link}
             >
-              <div
-                style={{
-                  border: "1px solid white",
-                  background: "black",
-                  padding: "1rem",
-                  borderRadius: "5px",
-                  marginBottom: "1rem",
-                }}
-              >
-                <div>
-                  #{number} - {name}
-                </div>
-                <OrderStatus status={status} />
-              </div>
+              <OrderCard orderId={_id} />
             </Link>
           ))}
         </div>
-        <div>
-          <div>Всего</div>
-          <div>{total != null ? total : "Загрузка..."}</div>
-          <hr />
-          <div>Всего сегодня</div>
-          <div>{totalToday != null ? totalToday : "Загрузка..."}</div>
-          <hr />
-          <div>Готовы</div>
-          <ol>
-            {orders
-              .filter((order) => order.status === "done")
-              .slice(0, 6)
-              .map((order) => (
-                <li key={order._id}>{order.number}</li>
-              ))}
-          </ol>
-          <hr />
-          <div>Готовятся</div>
-          <ol>
-            {orders
-              .filter(
-                (order) =>
-                  order.status === "pending" || order.status === "created"
-              )
-              .slice(0, 6)
-              .map((order) => (
-                <li key={order._id}>{order.number}</li>
-              ))}
-          </ol>
-        </div>
+        <OrderNumberFeed
+          doneToday={totalToday || 0}
+          doneTotal={total || 0}
+          readyNumbers={readyNumbers}
+          inProgressNumbers={inProgressNumbers}
+        />
       </div>
     </div>
   );

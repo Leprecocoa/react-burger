@@ -121,8 +121,12 @@ export const getUserInfo: (
           await dispatch(actionRefreshToken());
           await dispatch(getUserInfo(history, false));
         } catch (err) {
-          console.error(err);
+          await dispatch(logoutUser(history));
+          return;
         }
+      } else {
+        await dispatch(logoutUser(history));
+        return;
       }
     }
   };
@@ -134,7 +138,13 @@ export const setUserInfo: (
   password: string,
   history: History<LocationState>,
   retry?: boolean
-) => AppThunk<Promise<void>> = (name, email, password, history, retry = true) => {
+) => AppThunk<Promise<void>> = (
+  name,
+  email,
+  password,
+  history,
+  retry = true
+) => {
   return async (dispatch: AppDispatch) => {
     try {
       let authToken = getCookie("authToken");
@@ -151,7 +161,6 @@ export const setUserInfo: (
       }
 
       const res = await setUserInfoApi(authToken, { name, email, password });
-      console.log("setUserInfoApi", res);
       dispatch({
         type: SET_USER_INFO,
         payload: {
