@@ -17,6 +17,10 @@
   overflow-wrap: break-word;
 }
 
+.order_status_in_progress {
+  color: #F2F2F3;
+}
+
 .order_status_done {
   color: #00cccc;
 }

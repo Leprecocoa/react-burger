@@ -19,7 +19,8 @@ export const ordersReducer: Reducer<TOrdersState, TActions> = (
   action
 ) => {
   switch (action.type) {
-    case FEED_WS_GET_MESSAGE: {
+    case FEED_WS_GET_MESSAGE:
+    case PROFILE_FEED_WS_GET_MESSAGE:
       const { orders } = action.payload.data;
       return {
         ...state,
@@ -31,20 +32,6 @@ export const ordersReducer: Reducer<TOrdersState, TActions> = (
           ),
         },
       };
-    }
-    case PROFILE_FEED_WS_GET_MESSAGE: {
-      const { orders } = action.payload.data;
-      return {
-        ...state,
-        orders: {
-          ...state.orders,
-          ...orders.reduce<TOrdersState["orders"]>(
-            (acc, order) => ({ ...acc, [order._id]: order }),
-            {}
-          ),
-        },
-      };
-    }
     default:
       return state;
   }

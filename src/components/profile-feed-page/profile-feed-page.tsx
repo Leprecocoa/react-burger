@@ -1,7 +1,8 @@
 import { useLocation, Link } from "react-router-dom";
-import { useWsProfileFeed } from "../../services/hooks/useWsProfileFeed";
+import { useWsProfileFeed } from "../../services/hooks/use-ws-profile-feed";
 import { useAppSelector } from "../../utils/types";
-import { OrderStatus } from "../order-status/order-status";
+import styles from "../feed-page/feed-page.module.css";
+import { OrderCard } from "../order-card/order-card";
 
 export function ProfileFeedPage() {
   useWsProfileFeed();
@@ -10,29 +11,17 @@ export function ProfileFeedPage() {
   return (
     <div>
       <h1>Персональная лента заказов</h1>
-      <div>
-        {orders.map(({ _id, name, number, status }) => (
+      <div className={styles.order_list}>
+        {orders.map(({ _id }) => (
           <Link
             key={_id}
             to={{
               pathname: `/profile/orders/${_id}`,
               state: { background: location },
             }}
+            className={styles.feed_item_link}
           >
-            <div
-              style={{
-                border: "1px solid white",
-                background: "black",
-                padding: "1rem",
-                borderRadius: "5px",
-                marginBottom: "1rem",
-              }}
-            >
-              <div>
-                #{number} - {name}
-              </div>
-              <OrderStatus status={status} />
-            </div>
+            <OrderCard orderId={_id} />
           </Link>
         ))}
       </div>

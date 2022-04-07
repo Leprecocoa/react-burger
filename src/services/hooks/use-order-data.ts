@@ -19,14 +19,14 @@ export function useOrderData(orderId: string) {
     [order, ingredients]
   );
 
-  const { sliceOfIngredients, restOfIngredients } = useMemo(() => {
+  const { orderIngredientsSlice, orderIngredientsRest } = useMemo(() => {
     return {
-      sliceOfIngredients: orderIngredients.slice(0, 5),
-      restOfIngredients: orderIngredients.slice(5),
+      orderIngredientsSlice: orderIngredients.slice(0, 5),
+      orderIngredientsRest: orderIngredients.slice(5),
     };
   }, [orderIngredients]);
 
-  const counts = useMemo(() => {
+  const orderIngredientCounts = useMemo(() => {
     return order
       ? order.ingredients.reduce<{ [key: string]: number }>(
           (acc, ingredientId) => {
@@ -38,13 +38,13 @@ export function useOrderData(orderId: string) {
       : {};
   }, [order]);
 
-  const total = useMemo(
+  const orderTotal = useMemo(
     () =>
       orderIngredients.reduce((acc, ingredient) => {
-        return acc + ingredient.price * counts[ingredient._id];
+        return acc + ingredient.price * orderIngredientCounts[ingredient._id];
       }, 0),
-    [orderIngredients, counts]
+    [orderIngredients, orderIngredientCounts]
   );
 
-  return { order, orderIngredients, counts, total, sliceOfIngredients, restOfIngredients };
+  return { order, orderIngredients, orderIngredientCounts, orderTotal, orderIngredientsSlice, orderIngredientsRest };
 }

@@ -17,23 +17,18 @@ import React, { useEffect } from "react";
 import { getIngredientsApi } from "../../services/actions/ingredients-actions";
 import { FeedDetails } from "../../pages/feed-details";
 import { ProfileFeedDetails } from "../../pages/profile-feed-details";
-import { FeedDetailsModal } from "../feed-details-modal/feed-details-modal";
-import { ProfileFeedDetailsModal } from "../profile-feed-details-modal/profile-feed-details-modal";
 import { Feed } from "../../pages/feed";
 import { ProfileFeed } from "../../pages/profile-feed";
-import { Test } from "../../pages/test";
-import { getUserInfo } from "../../services/actions/user-actions";
+import { OrderInfoModal } from "../order-info-modal/order-info-modal";
 
 export function AppRoutes() {
   const location = useLocation<{ background: Location }>();
   const background = location.state && location.state.background;
   const dispatch = useAppDispatch();
-  const history = useHistory();
 
   useEffect(() => {
     dispatch(getIngredientsApi());
   }, [dispatch]);
-
 
   return (
     <div className={appstyles.page}>
@@ -72,9 +67,6 @@ export function AppRoutes() {
         <ProtectedRoute path="/profile/orders/:id">
           <ProfileFeedDetails />
         </ProtectedRoute>
-        <Route>
-          <Test />
-        </Route>
       </Switch>
 
       {background && (
@@ -83,9 +75,9 @@ export function AppRoutes() {
             path="/ingredients/:id"
             children={<IngredientDetailsModal />}
           />
-          <Route path="/feed/:id" children={<FeedDetailsModal />} />
+          <Route path="/feed/:id" children={<OrderInfoModal />} />
           <ProtectedRoute path="/profile/orders/:id">
-            <ProfileFeedDetailsModal />
+            <OrderInfoModal />
           </ProtectedRoute>
         </React.Fragment>
       )}
