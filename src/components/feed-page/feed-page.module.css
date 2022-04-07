@@ -23,6 +23,10 @@
   margin-bottom: none;
 }
 
+.profile_order_list {
+  width: calc(100% - 380px);
+}
+
 .scrollbar {
   scrollbar-color: #8585ad #2f2f37;
   scrollbar-width: thin;
@@ -35,4 +39,35 @@
 
 .scrollbar::-webkit-scrollbar-thumb {
   background-color: #8585ad;
+}
+
+.main {
+  display: flex;
+  justify-content: space-between;
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  width: 320px;
+}
+.active_link {
+  color: #fff;
+}
+
+.navlink {
+  text-decoration: none;
+}
+
+.logout {
+  align-self: flex-start;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }

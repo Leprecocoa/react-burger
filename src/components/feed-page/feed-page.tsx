@@ -13,7 +13,7 @@ export function FeedPage() {
     ({ feed: { orders, total, totalToday } }) => ({ orders, total, totalToday })
   );
 
-  let location = useLocation();
+  const location = useLocation();
 
   const readyNumbers = useMemo(
     () =>
