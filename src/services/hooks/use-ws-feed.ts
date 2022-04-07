@@ -7,6 +7,7 @@ import {
   FEED_WS_CONNECTION_START,
   FEED_WS_CONNECTION_SUCCESS,
   FEED_WS_GET_MESSAGE,
+  WS_CONNECTION_CLOSE,
 } from "../actions/ws-actions";
 
 export function useWsFeed() {
@@ -26,5 +27,13 @@ export function useWsFeed() {
         },
       },
     });
+    return () => {
+      dispatch({
+        type: WS_CONNECTION_CLOSE,
+        payload: {
+          id: "feed",
+        },
+      });
+    };
   }, [dispatch]);
 }

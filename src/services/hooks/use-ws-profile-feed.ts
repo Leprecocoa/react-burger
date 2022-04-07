@@ -8,6 +8,7 @@ import {
   PROFILE_FEED_WS_CONNECTION_START,
   PROFILE_FEED_WS_CONNECTION_SUCCESS,
   PROFILE_FEED_WS_GET_MESSAGE,
+  WS_CONNECTION_CLOSE,
 } from "../actions/ws-actions";
 
 export function useWsProfileFeed() {
@@ -32,5 +33,13 @@ export function useWsProfileFeed() {
         },
       },
     });
+    return () => {
+      dispatch({
+        type: WS_CONNECTION_CLOSE,
+        payload: {
+          id: "profileFeed",
+        },
+      });
+    };
   }, [dispatch]);
 }
