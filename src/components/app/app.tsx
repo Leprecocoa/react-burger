@@ -1,13 +1,11 @@
-import Header from "../header/header";
-import appstyles from "./app.module.css";
-import Main from "../main/main";
+import { BrowserRouter } from "react-router-dom";
+import { AppRoutes } from "../app-routes/app-routes";
 
 function App() {
   return (
-    <div className={appstyles.page}>
-      <Header />
-      <Main />
-    </div>
+    <BrowserRouter>
+      <AppRoutes />
+    </BrowserRouter>
   );
 }
 export default App;

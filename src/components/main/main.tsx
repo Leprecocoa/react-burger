@@ -1,31 +1,29 @@
-import { useCallback, useEffect } from "react";
+import { useCallback } from "react";
 import mainSectionStyles from "./main.module.css";
 import { OrderDetails } from "../order-details/order-details";
-import { IngredientDetails } from "../ingredient-details/ingredient-details";
 import { Modal } from "../modal/modal";
 import BurgerIngredients from "../burger-ingredients/burger-ingredients";
 import BurgerConstructorDroppable from "../burger-constructor-droppable/burger-constructor-droppable";
-import {
-  DELETE_ORDER_DATA,
-  DELETE_SELECTED_INGREDIENT_DATA,
-  getIngredientsApi,
-  getOrderNumber,
-  SELECT_INGREDIENT,
-} from "../../services/actions";
 import { TIngredient, useAppDispatch, useAppSelector } from "../../utils/types";
+import { useHistory } from "react-router-dom";
+import { SELECT_INGREDIENT } from "../../services/actions/ingredients-actions";
+import { getOrderNumber, DELETE_ORDER_DATA } from "../../services/actions/order-actions";
 
 function Main() {
   const dispatch = useAppDispatch();
+  const history = useHistory();
 
-  const { selectedIngredient, order } = useAppSelector(
+  const { order, loggedIn } = useAppSelector(
     ({
       ingredients: { ingredients, selectedIngredient },
       order: { order },
+      user: { loggedIn },
     }) => {
       return {
         ingredients,
         selectedIngredient,
         order,
+        loggedIn,
       };
     }
   );
@@ -42,25 +40,19 @@ function Main() {
     [dispatch]
   );
 
-  const handleIngredientDetailsClose = useCallback(() => {
-    dispatch({
-      type: DELETE_SELECTED_INGREDIENT_DATA,
-    });
-  }, [dispatch]);
-
-  useEffect(() => {
-    dispatch(getIngredientsApi());
-  }, [dispatch]);
-
   const handleOrderDetailsOpen = useCallback(
     (ingredients) => {
-      dispatch(
-        getOrderNumber(
-          ingredients.map((ingredient: TIngredient) => ingredient._id)
-        )
-      );
+      if (!loggedIn) {
+        history.push("/login");
+      } else {
+        dispatch(
+          getOrderNumber(
+            ingredients.map((ingredient: TIngredient) => ingredient._id)
+          )
+        );
+      }
     },
-    [dispatch]
+    [dispatch, history, loggedIn]
   );
 
   const handleOrderDetailsClose = useCallback(() => {
@@ -75,15 +67,7 @@ function Main() {
         handleIngredientDetailsOpen={handleIngredientDetailsOpen}
       />
       <BurgerConstructorDroppable onSubmit={handleOrderDetailsOpen} />
-      <Modal
-        isVisible={!!selectedIngredient}
-        onClose={handleIngredientDetailsClose}
-        title="Детали ингредиента"
-      >
-        {selectedIngredient ? (
-          <IngredientDetails ingredient={selectedIngredient} />
-        ) : null}
-      </Modal>
+
       <Modal isVisible={!!order} onClose={handleOrderDetailsClose}>
         {order ? <OrderDetails order={order} /> : null}
       </Modal>

@@ -1,7 +1,7 @@
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import { ThunkAction, ThunkDispatch } from "redux-thunk";
-import { TActions } from "../services/actions";
 import { store } from "./store";
+import { TActions } from "./tactions";
 
 export type TIngredient = {
   calories: number;

@@ -1,8 +1,8 @@
 import { useEffect, useRef } from "react";
 import { useDrag, useDrop } from "react-dnd";
-import { REORDER_CONSTRUCTOR_ITEM } from "../../services/actions";
 import BurgerConstructorItem from "../burger-constructor-item/burger-constructor-item";
 import { TIngredient, useAppDispatch } from "../../utils/types";
+import { REORDER_CONSTRUCTOR_ITEM } from "../../services/actions/burger-constructor-actions";
 
 interface IBurgerConstructorItemDraggableDroppableProps {
   ingredient: TIngredient;

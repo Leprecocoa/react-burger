@@ -3,7 +3,9 @@ const checkResponse: <T = {}>(res: Response) => Promise<T> = (res) => {
   if (res && res.ok) {
     return res.json();
   }
-  return Promise.reject(`Ошибка: ${res.status}`);
+  return res
+    .json()
+    .then((data) => Promise.reject({ message: `Ошибка ${res.status}`, data }));
 };
 
 export function getIngredients() {
@@ -22,4 +24,113 @@ export function sendOrder(ingredientIds: number[]) {
       ingredients: ingredientIds,
     }),
   }).then((res) => checkResponse<{ order: {}; success: boolean }>(res));
+}
+
+export function register({
+  email,
+  password,
+  name,
+}: {
+  email: string;
+  password: string;
+  name: string;
+}) {
+  return fetch(`${API_URL}/auth/register`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password, name }),
+  }).then((res) => checkResponse<{ accessToken: string }>(res));
+}
+
+export function login({
+  email,
+  password,
+}: {
+  email: string;
+  password: string;
+}) {
+  return fetch(`${API_URL}/auth/login`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password }),
+  }).then((res) =>
+    checkResponse<{
+      accessToken: string | null;
+      refreshToken: string | null;
+      success: boolean;
+    }>(res)
+  );
+}
+
+export function logout(refreshToken: string) {
+  return fetch(`${API_URL}/auth/logout`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ token: refreshToken }),
+  }).then((res) =>
+    checkResponse<{ refreshToken: string | null; success: boolean }>(res)
+  );
+}
+
+export function refreshToken(refreshToken: string) {
+  return fetch(`${API_URL}/auth/token`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ token: refreshToken }),
+  }).then((res) =>
+    checkResponse<{
+      accessToken: string;
+      refreshToken: string;
+    }>(res)
+  );
+}
+
+export function getUserInfoApi(authToken: string) {
+  return fetch(`${API_URL}/auth/user`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${authToken}`,
+    },
+  }).then((res) =>
+    checkResponse<{ user: { name: string; email: string } }>(res)
+  );
+}
+
+export function setUserInfoApi(
+  authToken: string,
+  { name, email, password }: { name: string; email: string; password: string }
+) {
+  return fetch(`${API_URL}/auth/user`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${authToken}`,
+    },
+    body: JSON.stringify({ name, email, password }),
+  }).then((res) =>
+    checkResponse<{
+      user: {
+        name: string;
+        email: string;
+        password: string;
+      };
+    }>(res)
+  );
+}
+
+export function forgotPasswordApi(email: string) {
+  return fetch(`${API_URL}/password-reset`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email }),
+  }).then((res) => checkResponse<{ success: boolean }>(res));
+}
+
+export function resetPasswordApi(password: string, resetToken: string) {
+  return fetch(`${API_URL}/password-reset/reset`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ password, token: resetToken }),
+  }).then((res) => checkResponse<{ success: boolean }>(res));
 }
