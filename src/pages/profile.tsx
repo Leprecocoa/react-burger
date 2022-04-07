@@ -4,15 +4,13 @@ import {
 } from "@ya.praktikum/react-developer-burger-ui-components";
 import { useCallback, useEffect, useState } from "react";
 import { NavLink, useHistory } from "react-router-dom";
-import {
-  getUserInfo,
-  setUserInfo,
-  logoutUser,
-} from "../services/actions/user-actions";
+import { setUserInfo, logoutUser } from "../services/actions/user-actions";
+import { useUserInfo } from "../services/hooks/use-user-info";
 import { useAppDispatch, useAppSelector } from "../utils/types";
 import styles from "./profile.module.css";
 
 export const Profile = () => {
+  useUserInfo();
   const { name, email, password } = useAppSelector((state) => {
     return {
       name: state.user.name,

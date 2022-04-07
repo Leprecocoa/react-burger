@@ -1,5 +1,5 @@
 import appstyles from "../app/app.module.css";
-import { Route, Switch, useHistory, useLocation } from "react-router-dom";
+import { Route, Switch, useLocation } from "react-router-dom";
 import { Location } from "history";
 import { Constructor } from "../../pages/constructor";
 import { Register } from "../../pages/register";
@@ -19,7 +19,8 @@ import { FeedDetails } from "../../pages/feed-details";
 import { ProfileFeedDetails } from "../../pages/profile-feed-details";
 import { Feed } from "../../pages/feed";
 import { ProfileFeed } from "../../pages/profile-feed";
-import { OrderInfoModal } from "../order-info-modal/order-info-modal";
+import { ProfileFeedDetailsModal } from "../../pages/profile-feed-details-modal";
+import { FeedDetailsModal } from "../../pages/feed-details-modal";
 
 export function AppRoutes() {
   const location = useLocation<{ background: Location }>();
@@ -75,9 +76,9 @@ export function AppRoutes() {
             path="/ingredients/:id"
             children={<IngredientDetailsModal />}
           />
-          <Route path="/feed/:id" children={<OrderInfoModal />} />
+          <Route path="/feed/:id" children={<FeedDetailsModal />} />
           <ProtectedRoute path="/profile/orders/:id">
-            <OrderInfoModal />
+            <ProfileFeedDetailsModal />
           </ProtectedRoute>
         </React.Fragment>
       )}

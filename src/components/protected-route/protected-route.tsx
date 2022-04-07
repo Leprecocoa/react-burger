@@ -1,16 +1,7 @@
-import { useEffect } from "react";
-import { Route, Redirect, RouteProps, useLocation, useHistory } from "react-router-dom";
-import { getUserInfo } from "../../services/actions/user-actions";
-import { useAppDispatch, useAppSelector } from "../../utils/types";
+import { Route, Redirect, RouteProps, useLocation } from "react-router-dom";
+import { useAppSelector } from "../../utils/types";
 
 function ProtectedRoute(props: RouteProps) {
-  const history = useHistory();
-  const dispatch = useAppDispatch();
-
-  useEffect(() => {
-    dispatch(getUserInfo(history));
-  }, [dispatch, history]);
-
   const { loggedIn } = useAppSelector((state) => ({
     loggedIn: state.user.loggedIn,
   }));

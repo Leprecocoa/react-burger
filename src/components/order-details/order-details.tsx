@@ -37,8 +37,11 @@ export const OrderDetails = ({ orderId }: { orderId: string }) => {
         <div className={`${styles.order_ingredients} pr-4`}>
           <p className="text text_type_main-medium mb-6">Состав:</p>
           <ul className={styles.order_ingredients_list}>
-            {orderIngredients.map((ingredient) => (
-              <li className={`${styles.order_ingredients_listitem} mb-4`}>
+            {orderIngredients.map((ingredient, index) => (
+              <li
+                key={`${ingredient._id}${index}`}
+                className={`${styles.order_ingredients_listitem} mb-4`}
+              >
                 <div className={styles.ingredient_details}>
                   <img src={ingredient.image_mobile} alt="Img" />
                   <p

@@ -37,7 +37,7 @@ export function FeedPage() {
     <div>
       <h1>Лента заказов</h1>
       <div className={styles.feed_page_grid}>
-        <div className={styles.order_list}>
+        <div className={`${styles.order_list} ${styles.scrollbar}`}>
           {orders.map(({ _id }) => (
             <Link
               key={_id}
