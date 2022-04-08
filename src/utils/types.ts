@@ -1,5 +1,10 @@
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import { ThunkAction, ThunkDispatch } from "redux-thunk";
+import {
+  WS_CONNECTION_CLOSE,
+  WS_CONNECTION_INIT,
+  WS_SEND_MESSAGE,
+} from "../services/actions/ws-actions";
 import { store } from "./store";
 import { TActions } from "./tactions";
 
@@ -50,4 +55,25 @@ export type TFeedWsResponse = {
   totalToday: number;
   orders: TOrder[];
   message?: string;
+};
+
+export type TWsActions = {
+  init: typeof WS_CONNECTION_INIT;
+  send: typeof WS_SEND_MESSAGE;
+  close: typeof WS_CONNECTION_CLOSE;
+};
+
+export type TWsConnectionPool = {
+  [id: string]: {
+    socket: WebSocket;
+    wsUrl: string;
+    id: string;
+    actions: {
+      start: string;
+      open: string;
+      error: string;
+      message: string;
+      close: string;
+    };
+  };
 };

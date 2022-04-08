@@ -1,37 +1,21 @@
 import type { Middleware, Dispatch } from "redux";
-import {
-  WS_CONNECTION_INIT,
-  WS_SEND_MESSAGE,
-  WS_CONNECTION_CLOSE,
-} from "../actions/ws-actions";
 import { TActions } from "../../utils/tactions";
-import { TFeedWsResponse } from "../../utils/types";
+import {
+  TFeedWsResponse,
+  TWsActions,
+  TWsConnectionPool,
+} from "../../utils/types";
 
-export const socketMiddleware: () => Middleware<
-  {},
-  {},
-  Dispatch<TActions>
-> = () => {
+export const socketMiddleware: (
+  wsActions: TWsActions
+) => Middleware<{}, {}, Dispatch<TActions>> = (wsActions) => {
   return (store) => {
-    const connections: {
-      [id: string]: {
-        socket: WebSocket;
-        wsUrl: string;
-        id: string;
-        actions: {
-          start: string;
-          open: string;
-          error: string;
-          message: string;
-          close: string;
-        };
-      };
-    } = {};
+    const connections: TWsConnectionPool = {};
     return (next: Dispatch<TActions>) => (action: TActions) => {
       const { dispatch } = store;
       const { type } = action;
 
-      if (type === WS_CONNECTION_INIT) {
+      if (type === wsActions.init) {
         const { wsUrl, id, actions } = action.payload;
 
         if (connections[id]) {
@@ -105,7 +89,7 @@ export const socketMiddleware: () => Middleware<
         };
       }
 
-      if (type === WS_SEND_MESSAGE) {
+      if (type === wsActions.send) {
         const { message, id } = action.payload;
         const connection = connections[id];
         if (connection) {
@@ -114,7 +98,7 @@ export const socketMiddleware: () => Middleware<
         }
       }
 
-      if (type === WS_CONNECTION_CLOSE) {
+      if (type === wsActions.close) {
         const { id } = action.payload;
         const connection = connections[id];
         if (connection) {
